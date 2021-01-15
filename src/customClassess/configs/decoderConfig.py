@@ -1,6 +1,6 @@
-class DecoderConfig():
+class DecoderConfig(object):
     DIM = 512
-    
+
     """
     docstring
     """
@@ -11,3 +11,4 @@ class DecoderConfig():
 
     def build(self):
         #Use PyTorch to build the decoder
+        return 1

@@ -1,5 +1,3 @@
-from . import decoder, encoder
-
 class model(object):
     """
     ## Contains the model
@@ -15,4 +13,3 @@ class model(object):
     def create(config):
 
 
-    
