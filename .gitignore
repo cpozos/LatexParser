@@ -130,7 +130,8 @@ dmypy.json
 
 
 # Raw data
-src/data/sets/raw
+src/data/sets/images/
+src/data/sets/images
 
 # Processed data
 src/data/sets/processed
