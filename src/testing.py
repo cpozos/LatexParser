@@ -9,7 +9,6 @@ from data.providers.vocabulary import Vocabulary
 data = Data()
 list_formulas = data.build_for('train')
 
-voca = Vocabulary()
 dic = voca.get_tokens_dic()
 dic = voca.get_indexes_dic()
 

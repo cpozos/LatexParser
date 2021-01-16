@@ -1,7 +1,10 @@
 from os.path import join
+import pickle as pkl
 from torchvision import transforms
 import torch
 from PIL import Image
+from collections import Counter
+from providers.vocabulary import Vocabulary
 
 class Data(object):
     IMAGES_DIR = 'src\data\sets\\raw\images'
@@ -104,6 +107,23 @@ class Data(object):
     def get_formula(self, formula_id):
         return self._latex_formulas[formula_id]
     
+    def _process_vocabulary(self, kind, min_count = 10):
+        counter = Counter()
+        vocabulary = Vocabulary()
+        for pair in self:
+            formula = self._latex_formulas[pair[1]].split()
+            counter.update(formula)
+
+        for word, count in counter.most_common():
+            if count >= min_count:
+                vocabulary.add_token(word)
+
+        # Writes processed vocabulary
+        self._vocabulary_created = vocabulary.save()
+
+
+
+
 
     #TODO delete it. Deprecated
     def map_images_latex_dictionary(self, kind, max = 100):
