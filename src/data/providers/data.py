@@ -4,10 +4,10 @@ import torch
 from PIL import Image
 
 class Data(object):
-    IMAGES_DIR = '..\sets\formula_images_processed'
-    LATEX_FORMULAS_PATH = '..\sets\im2latex_formulas.norm.lst'
-    IMAGE_LATEX_DIC_PATH = "im2latex_{}_filter.lst"
-    OUTPUT_DIR = ".\processed"
+    IMAGES_DIR = '..\sets\raw\images'
+    LATEX_FORMULAS_PATH = '..\sets\raw\im2latex_formulas.norm.lst'
+    IMAGE_LATEX_DIC_PATH = "..\sets\raw\im2latex_{}_filter.lst"
+    OUTPUT_DIR = "..\sets\processed"
 
     """
     docstring
