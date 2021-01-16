@@ -12,10 +12,25 @@ class Model(object):
         self.config = config
         self.encoder = Encoder(self.config.encoderConfig)
         self.decoder = Decoder(self.config.decoderConfig)
-        self.num_layers = config.num_layers
-        self.num_hidden_layers = config.num_hidden_layers
+
 
     def create(config):
+
+
+
         return
+
+    def run(self):
+        """
+        docstring
+        """
+        for epoch in range(self.config.epochs):
+            print "Ep**Ep"
+            iteration = 1
+            for batch in self.
+
+        return
+
+    def 
 
 
