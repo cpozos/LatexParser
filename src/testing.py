@@ -7,8 +7,7 @@ from data.providers.vocabulary import Vocabulary
 
 # 0. Preprocess the raw data (only one time) 
 data = Data()
-list_formulas = data.map_latex_formulas()
-list_images = data.map_images_latex_dictionary('train')
+list_formulas = data.build_for('train')
 
 voca = Vocabulary()
 dic = voca.get_tokens_dic()
