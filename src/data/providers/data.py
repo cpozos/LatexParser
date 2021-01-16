@@ -122,9 +122,6 @@ class Data(object):
         self._vocabulary_created = vocabulary.save()
 
 
-
-
-
     #TODO delete it. Deprecated
     def map_images_latex_dictionary(self, kind, max = 100):
         """
