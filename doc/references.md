@@ -11,3 +11,9 @@
 [3] https://github.com/ritheshkumar95/im2latex-tensorflow
 
 [4] https://github.com/345ishaan/im2latex
+
+[5] https://arxiv.org/pdf/1908.11415.pdf  (PyTorch)
+
+[6] https://github.com/luopeixiang/im2latex  (PyTorch)
+
+[7] https://guillaumegenthial.github.io/image-to-latex.html
