@@ -25,7 +25,7 @@ class Model(object):
         docstring
         """
         for epoch in range(self.config.epochs):
-            print "Ep**Ep"
+            print ("Ep**Ep")
             iteration = 1
             for batch in self.
 
