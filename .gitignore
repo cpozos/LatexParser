@@ -129,5 +129,8 @@ dmypy.json
 .pyre/
 
 
-./src/data/sets/
-src/data/sets/
+# Raw data
+src/data/sets/raw
+
+# Processed data
+src/data/sets/processed
