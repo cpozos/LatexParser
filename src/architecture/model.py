@@ -1,5 +1,5 @@
-from customClassess import Encoder
-from customClassess import Decoder
+from architecture import Encoder
+from architecture import Decoder
 
 class Model(object):
     """
@@ -12,12 +12,9 @@ class Model(object):
         self.config = config
         self.encoder = Encoder(self.config.encoderConfig)
         self.decoder = Decoder(self.config.decoderConfig)
-
+        return
 
     def create(config):
-
-
-
         return
 
     def run(self):
@@ -27,10 +24,7 @@ class Model(object):
         for epoch in range(self.config.epochs):
             print ("Ep**Ep")
             iteration = 1
-            for batch in self.
 
         return
-
-    def 
 
 

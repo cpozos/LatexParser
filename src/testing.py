@@ -1,18 +1,32 @@
-from models.configs import *
-from models import *
+from architecture.configs import *
+from architecture import *
+from data.providers.data import Data
+from data.providers.vocabulary import Vocabulary
+
 # Script to test the implementations
 
+# 0. Preprocess the raw data (only one time) 
+data = Data()
+list_formulas = data.map_latex_formulas()
+list_images = data.map_images_latex_dictionary('train')
 
-# 1. Get data
+voca = Vocabulary()
+dic = voca.get_tokens_dic()
+dic = voca.get_indexes_dic()
 
-# 2. Process to train data
+# 1. Get processed data
+
+X = data.get_input_data()
+Y = data.get_target_data()
+
+# 2. Process the data to be trained
+
 
 # 3. Assign parameters and data to model and create it
 
 # Configurations
 e_config = EncoderConfig(20)
 d_config = DecoderConfig(50)
-
 model_config = ModelConfig(e_config, d_config, 10, 2)
 
 # Creates the model
