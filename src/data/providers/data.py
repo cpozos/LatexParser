@@ -1,12 +1,14 @@
 from os.path import join
-import pickle as pkl
 from torchvision import transforms
-import torch
 from PIL import Image
 from collections import Counter
-from providers.vocabulary import Vocabulary
+
+import pickle as pkl
+import torch
+from data.providers._vocabulary import Vocabulary
 
 class Data(object):
+    KINDS = ["train", "validation", "test"]
     IMAGES_DIR = 'src\data\sets\\raw\images'
     LATEX_FORMULAS_PATH = 'src\data\sets\\raw\im2latex_formulas.norm.lst'
     IMAGE_LATEX_DIC_PATH = "src\data\sets\\raw\im2latex_{}_filter.lst"
@@ -16,36 +18,27 @@ class Data(object):
     docstring
     """
     def __init__(self):
+        # Images - Latex mappings
         self._check_data_processed()
-
         if (not self.is_all_data_processed):
-            self._map_latex_formulas()
-        pass
+            self._process_latex_formulas()
+        
+        # Vocabulary mapping
+        self._process_vocabulary()
 
     def _check_data_processed(self):
-        self.is_train_data_processed = True
-        self.is_test_data_processed = True
-        self.is_validate_data_processed = True
         self.is_all_data_processed = True
 
-        try:
-            f = open(join(Data.OUTPUT_DIR, "train.pkl"))
-        except IOError:
-            self.is_train_data_processed = False
+        kinds = ["train", "validation", "test"]
+        self.kinds_created = dict((kind, True) for kind in Data.KINDS)
+        for k in kinds:
+            try:
+                f = open(join(Data.OUTPUT_DIR, "{}.pkl".format(k)))
+            except IOError:
+                self.kinds_created[k] = False
+            self.is_all_data_processed = self.is_all_data_processed and self.kinds_created[k]
 
-        try:
-            f = open(join(Data.OUTPUT_DIR, "test.pkl"))
-        except IOError:
-            self.is_test_data_processed = False
-
-        try:
-            f = open(join(Data.OUTPUT_DIR, "validate.pkl"))
-        except IOError:
-            self.is_validate_data_processed = False
-
-        self.is_all_data_processed = self.is_train_data_processed and self.is_test_data_processed and self.is_validate_data_processed
-    
-    def _map_latex_formulas(self):
+    def _process_latex_formulas(self):
         """
         docstring
         """
@@ -53,15 +46,29 @@ class Data(object):
         with open(Data.LATEX_FORMULAS_PATH, 'r') as latex_formulas_file:
             self._latex_formulas = [formula.strip('\n') for formula in latex_formulas_file.readlines()]
 
-    def _is_data_processed(self, kind):
-        if kind == "train":
-            return self.is_train_data_processed
-        elif kind == "validation":
-            return self.is_validation_data_processed
-        elif kind == "test":
-            return self.is_test_data_processed
-        else:
-             return False
+    def _process_vocabulary(self, min_count = 10):
+
+        # Checks if vocabulary already created
+        self._vocabulary = Vocabulary()
+        if not self._vocabulary.is_already_created():
+            # Sets the path of the training data
+            self._image_latex_data_path = Data.IMAGE_LATEX_DIC_PATH.format('train')
+
+            counter = Counter()
+            for pair in self:
+                formula = self._latex_formulas[pair[1]].split()
+                counter.update(formula)
+
+            for word, count in counter.most_common():
+                if count >= min_count:
+                    self._vocabulary.add_token(word)
+
+            # Writes processed vocabulary
+            self._vocabulary.save()
+
+    def _is_already_created_for(self, kind):
+        assert kind in Data.KINDS
+        return self.kinds_created[kind]
 
     def __iter__(self):
         with open(self._image_latex_data_path) as file:
@@ -74,10 +81,9 @@ class Data(object):
                 yield img_path, int(formula_id)
 
     def build_for(self, kind, max = 20):
-
         # Validates processing
         assert kind in ["train", "validation", "test"]
-        if self._is_data_processed(kind):
+        if self._is_already_created_for(kind):
             return
         
         # Sets data path
@@ -104,23 +110,23 @@ class Data(object):
         #out_file = join(Data.OUTPUT_DIR, "{}.pkl".format(kind))
         #torch.save(pairs, out_file)
 
+    # VOCABULARY
+    def get_vocabulary(self):
+        return self._vocabulary
+
+    # LATEX FORMULAS
+    def get_latex_formulas(self):
+        return self._latex_formulas
+
     def get_formula(self, formula_id):
         return self._latex_formulas[formula_id]
     
-    def _process_vocabulary(self, kind, min_count = 10):
-        counter = Counter()
-        vocabulary = Vocabulary()
-        for pair in self:
-            formula = self._latex_formulas[pair[1]].split()
-            counter.update(formula)
+    def get_input_data(self):
+        # TODO X data
+        return {}
 
-        for word, count in counter.most_common():
-            if count >= min_count:
-                vocabulary.add_token(word)
-
-        # Writes processed vocabulary
-        self._vocabulary_created = vocabulary.save()
-
+    def get_target_data(self):
+        return []
 
     #TODO delete it. Deprecated
     def map_images_latex_dictionary(self, kind, max = 100):
@@ -153,11 +159,5 @@ class Data(object):
         pairs.sort(key = lambda pair : tuple(pair[0].size()) )
         return pairs
 
-    def get_input_data(self):
-        # TODO X data
-        return {}
-
-
-    def get_target_data(self):
         # TODO Y data
         return []

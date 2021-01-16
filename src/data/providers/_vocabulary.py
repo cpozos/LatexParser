@@ -27,27 +27,20 @@ class Vocabulary(object):
 
         self.id_token_dic = dict((id, token) for token, id in self.token_id_dic.items())
 
-    def _vocabulary_already_created(self):
-        try:
-            file = open(Vocabulary.PROCESSED_PATH)
-        except IOError:
-            return False
-        return True
-
     def __len__(self):
         return self.length
 
     def add_token(self, token):
-        if token not in self._token_id_dic:
+        if token not in self.token_id_dic:
             self.token_id_dic[token] = self.length
             self.id_token_dic[self.length] = token
             self.length += 1
 
     def load(self):
-        if self._vocabulary_already_created():
+        if self.is_already_created():
             with open(Vocabulary.PROCESSED_PATH, 'rb') as f:
                 self = pkl.load(f)
-        else
+        else:
             self._initialize()
 
     def dispose(self):
@@ -56,6 +49,9 @@ class Vocabulary(object):
         self.length = 0
 
     def save(self):
+        #TODO for testing avoid saving
+        return True
+        
         try:
             with open(Vocabulary.PROCESSED_PATH, 'wb') as w:
                 pkl.dump(self, w)
@@ -64,8 +60,15 @@ class Vocabulary(object):
         return True
 
     def delete(self):
-        if self._vocabulary_already_created():
+        if self.is_already_created():
             os.remove(Vocabulary.PROCESSED_PATH)
+
+    def is_already_created(self):
+        try:
+            file = open(Vocabulary.PROCESSED_PATH)
+        except IOError:
+            return False
+        return True
 
     def get_token(self, index):
         return self.id_token_dic[index]

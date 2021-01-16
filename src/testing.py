@@ -1,16 +1,16 @@
 from architecture.configs import *
 from architecture import *
-from data.providers.data import Data
-from data.providers.vocabulary import Vocabulary
+from data import Data
 
 # Script to test the implementations
 
 # 0. Preprocess the raw data (only one time) 
 data = Data()
-list_formulas = data.build_for('train')
+voca = data.get_vocabulary()
+data.build_for('train')
 
-dic = voca.get_tokens_dic()
-dic = voca.get_indexes_dic()
+dic = voca.token_id_dic
+dic = voca.id_token_dic
 
 # 1. Get processed data
 
