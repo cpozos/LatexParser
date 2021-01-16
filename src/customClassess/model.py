@@ -1,4 +1,7 @@
-class model(object):
+from customClassess import Encoder
+from customClassess import Decoder
+
+class Model(object):
     """
     ## Contains the model
     ## 1. uses a CNN (arranges the feature in a grid)
@@ -9,7 +12,10 @@ class model(object):
         self.config = config
         self.encoder = Encoder(self.config.encoderConfig)
         self.decoder = Decoder(self.config.decoderConfig)
+        self.num_layers = config.num_layers
+        self.num_hidden_layers = config.num_hidden_layers
 
     def create(config):
+        return
 
 

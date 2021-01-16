@@ -11,4 +11,5 @@ class EncoderConfig():
         self.batch_size = batch_size
 
     def build(self):
+        return
         ## Use PyTorch to build the encoder

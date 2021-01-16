@@ -1,5 +1,12 @@
-from customClassess.configs.decoderConfig import DecoderConfig 
-
-
+from customClassess.configs import *
+from customClassess import *
 # Script to test the implementations
-e_config = DecoderConfig(20)
+
+# Configurations
+e_config = EncoderConfig(20)
+d_config = DecoderConfig(50)
+
+model_config = ModelConfig(e_config, d_config, 10, 2)
+
+# Creates the model
+model = Model(model_config)

@@ -1,8 +1,7 @@
-class decoder():
+class Decoder():
     """
     docstring
     """
-    def create(config):
-        self.num_layers = config.num_layers
-        self.num_hidden_layers = config.num_hidden_layers
+    def __init__(self, config):
+        return
         
