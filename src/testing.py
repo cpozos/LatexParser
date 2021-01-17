@@ -14,8 +14,9 @@ dic = voca.token_id_dic
 dic = voca.id_token_dic
 
 # 1. Get processed data
-data_builder.build_for('train')
+data_builder.build_for('train', True)
 train_dataset = data_builder.get_dataset()
+value = train_dataset [60000] # it contains the tensor 
 
 loader = DataLoader (
     train_dataset,

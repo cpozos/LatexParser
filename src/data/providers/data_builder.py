@@ -61,7 +61,7 @@ class DataBuilder(object):
             # Writes processed vocabulary
             self._vocabulary.save()
 
-    def build_for(self, kind, max = 20):
+    def build_for(self, kind, force = False):
         # Validates processing
         assert kind in DataBuilder.KINDS
         
@@ -69,16 +69,16 @@ class DataBuilder(object):
         path = DataBuilder.IMAGE_LATEX_DIC_PATH.format(kind)
 
         # Assigns the data set 
-        self._dataset = ImageLatexDataset(kind)
+        self._dataset = ImageLatexDataset(kind, force)
+
+        #TODO check if next logic could be inside ImageLatexDataset
         if not self._dataset.is_processed_and_saved():
-            # Sets the path of the training data
+
+            # Sets the path of the training data to iterate
             self._image_latex_data_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format('train')
-
             for pair in self:
-                img_path = pair[0]
                 formula = self._latex_formulas[pair[1]]
-                self._dataset.add_item(img_path, formula)
-
+                self._dataset.add_item(pair[0], formula)              
             self._dataset.save()
 
     # VOCABULARY
