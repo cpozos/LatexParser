@@ -1,6 +1,8 @@
 from architecture import Encoder
 from architecture import Decoder
 
+
+
 class Model(object):
     """
     ## Contains the model

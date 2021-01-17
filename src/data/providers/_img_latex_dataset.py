@@ -5,8 +5,10 @@ from PIL import Image
 
 from os.path import join
 from torchvision import transforms
+from torch.utils.data import Dataset
 
-class ImageLatexDataset(object):
+
+class ImageLatexDataset(DataSet):
     OUTPUT_DIR = "src\\data\\sets\\processed"
 
     def __init__(self, output_filename, max_len = 300, max_count = 10):
@@ -31,7 +33,7 @@ class ImageLatexDataset(object):
         self._sort_pairs = False
 
     def add_item(self, img_path, formula):
-        if self._max_count < len(self._pairs) + 1 :
+        if self._max_count < self.__len__() + 1 :
             return
 
         img = Image.open(img_path)
@@ -67,3 +69,9 @@ class ImageLatexDataset(object):
     def get_data_set(self):
         self._sort_pairs()
         return self._pairs
+
+    def __getitem__(self, index):
+        return self._pairs[index]
+
+    def __len__(self):
+        return len(self._pairs)
