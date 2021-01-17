@@ -133,4 +133,4 @@ dmypy.json
 src/data/sets/raw/images/
 
 # Processed data
-src/data/sets/processed
+src/data/sets/processed/*.pkl
