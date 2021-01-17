@@ -24,7 +24,8 @@ class ImageLatexDataset(Dataset):
             self._pairs = torch.load(self.out_data_path)
             for i, (img, formula) in enumerate(pairs):
                 #TODO why self._max_len?
-                pair = (img, " ".join(formula.split()[:self._max_len]))
+                # pair = (img, " ".join(formula.split()[:self._max_len]))
+                pair = (img, " ".join(formula.split()))
         else:
             self._pairs = []
 
@@ -45,7 +46,7 @@ class ImageLatexDataset(Dataset):
         self.sort_pairs()
         # Saves processed data
         #TODO not saving for testing
-        return
+        #return
         torch.save(self._pairs, self.out_data_path)
 
     def delete(self):

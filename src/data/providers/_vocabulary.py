@@ -16,7 +16,6 @@ class Vocabulary(object):
         self.token_id_dic = {
             'PAD': 0, 'GO': 1, 'EOS': 2, 'UNKNOWN': 3
         }
-        self.length = 4
 
         # Uses the latex_vocab.txt file
         if use_txt :
@@ -28,34 +27,38 @@ class Vocabulary(object):
                 self.add_item(token)           
         self.id_token_dic = dict((id, token) for token, id in self.token_id_dic.items())
 
+
+
     def __len__(self):
-        return self.length
+        return len(self.token_id_dic)
 
     def add_token(self, token):
         if token not in self.token_id_dic:
-            self.token_id_dic[token] = self.length
-            self.id_token_dic[self.length] = token
-            self.length += 1
+            length = self.__len__()
+            self.token_id_dic[token] = length
+            self.id_token_dic[length] = token
 
     def load(self):
         if self.is_already_created():
             with open(Vocabulary.PROCESSED_PATH, 'rb') as f:
-                self = pkl.load(f)
+                data_saved = pkl.load(f)
+                self.token_id_dic = data_saved[0]
+                self.id_token_dic = data_saved[1]
+
         else:
             self._initialize()
 
     def dispose(self):
-        self.id_token_dic = None
-        self.token_id_dic = None
-        self.length = 0
+        self.id_token_dic = {}
+        self.token_id_dic = {}
 
     def save(self):
         #TODO for testing avoid saving
-        return True
+        #return True
         
         try:
             with open(Vocabulary.PROCESSED_PATH, 'wb') as w:
-                pkl.dump(self, w)
+                pkl.dump([self.token_id_dic, self.id_token_dic], w)
         except Exception:
             return False
         return True

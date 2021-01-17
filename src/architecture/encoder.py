@@ -25,8 +25,8 @@ class Encoder(object):
             nn.Conv2d(256,256,3,1,1),
             nn.ReLU(),
 
-            nn.MaxPool2d((2,1),(2,1),0)
+            nn.MaxPool2d((2,1),(2,1),0),
 
-            nn.Conv2d(256, self._config.out_size, 3,1,0)
+            nn.Conv2d(256, self._config.out_size,3,1,0),
             nn.ReLU()
         )
