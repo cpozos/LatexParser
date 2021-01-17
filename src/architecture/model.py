@@ -1,22 +1,32 @@
 from architecture import Encoder
 from architecture import Decoder
 
+#Torch
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.nn import init
+from torch.distributions.uniform import Uniform
 
 
-class Model(object):
-    """
-    ## Contains the model
-    ## 1. uses a CNN (arranges the feature in a grid)
-    ## 2. A RNN encodes each row
-    ## 3. A RNN decodes 
-    """
+class Model(nn.Module):
+
     def __init__(self, config):
-        self.config = config
-        self.encoder = Encoder(self.config.encoderConfig)
-        self.decoder = Decoder(self.config.decoderConfig)
-        return
+        super(Model, self).__init__()
+
+        # Encoder
+        self.cnn.encoder = Encoder(self.config.encoder_config).build()
+
+        # Decoder
+        self.rnn_decoder = Decoder(self.config.decoder_config).build()
+
+        # Embedding
+        self.embedding = nn.Embedding(config.out_size, config.emb_size)
 
     def create(config):
+
+
+
         return
 
     def run(self):

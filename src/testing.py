@@ -30,7 +30,13 @@ loader = DataLoader (
 # Configurations
 e_config = EncoderConfig(20)
 d_config = DecoderConfig(50)
-model_config = ModelConfig(e_config, d_config, 10, 2)
+
+model_config = ModelConfig(
+    encoder_config= e_config, 
+    decoder_config= d_config, 
+    num_layers=200, 
+    num_hidden_layers=80,
+    epochs=1000)
 
 # Creates the model
 model = Model(model_config)

@@ -1,16 +1,15 @@
+#PytTorch
+import torch
+import torch.nn as nn
+
 class Decoder():
     """
     docstring
     """
     def __init__(self, config):
         self.config = config
-        build()
-        return
         
     def build(self):
-        """
-        PyTorch implementation for the decoder
-        """
-        
-
-        return
+        return nn.LSTMCell(
+            self.config.dec_rnn_h + self.config.emb_size, 
+            self.config.dec_rnn_h)
