@@ -7,7 +7,7 @@ import torch
 from data.providers._vocabulary import Vocabulary
 from data.providers._img_latex_dataset import ImageLatexDataset
 
-class Data(object):
+class DataBuilder(object):
     KINDS = ["train", "validation", "test"]
     LATEX_FORMULAS_PATH = 'src\data\sets\\raw\im2latex_formulas.norm.lst'
     IMAGE_LATEX_DIC_PATH = "src\data\sets\\raw\im2latex_{}_filter.lst"
@@ -30,7 +30,7 @@ class Data(object):
                 #line = line.strip().split(' ')
                 #img_name, formula_id = line[0], line[1]
                 img_name, formula_id = line.strip('\n').split()
-                img_path = join(Data.IMAGES_DIR, img_name)
+                img_path = join(DataBuilder.IMAGES_DIR, img_name)
                 yield img_path, int(formula_id)
 
     def _process_latex_formulas(self):
@@ -38,7 +38,7 @@ class Data(object):
         docstring
         """
         # Reads the formulas
-        with open(Data.LATEX_FORMULAS_PATH, 'r') as latex_formulas_file:
+        with open(DataBuilder.LATEX_FORMULAS_PATH, 'r') as latex_formulas_file:
             self._latex_formulas = [formula.strip('\n') for formula in latex_formulas_file.readlines()]
 
     def _process_vocabulary(self, min_count = 10):
@@ -47,7 +47,7 @@ class Data(object):
         self._vocabulary = Vocabulary()
         if not self._vocabulary.is_already_created():
             # Sets the path of the training data
-            self._image_latex_data_path = Data.IMAGE_LATEX_DIC_PATH.format('train')
+            self._image_latex_data_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format('train')
 
             counter = Counter()
             for pair in self:
@@ -63,16 +63,16 @@ class Data(object):
 
     def build_for(self, kind, max = 20):
         # Validates processing
-        assert kind in Data.KINDS
+        assert kind in DataBuilder.KINDS
         
         # Sets data path
-        path = Data.IMAGE_LATEX_DIC_PATH.format(kind)
+        path = DataBuilder.IMAGE_LATEX_DIC_PATH.format(kind)
 
         # Assigns the data set 
         self._dataset = ImageLatexDataset(kind)
         if not self._dataset.is_processed_and_saved():
             # Sets the path of the training data
-            self._image_latex_data_path = Data.IMAGE_LATEX_DIC_PATH.format('train')
+            self._image_latex_data_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format('train')
 
             for pair in self:
                 img_path = pair[0]
@@ -103,7 +103,7 @@ class Data(object):
         ## Reads the Image - LatexFormula dictionary
         #pairs = []
         #transform = transforms.ToTensor()
-        #image_latex_dic_path = Data.IMAGE_LATEX_DIC_PATH.format(kind)
+        #image_latex_dic_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format(kind)
         #i = 0
         #with open(image_latex_dic_path, 'r') as file:
         #    for line in file:
@@ -112,7 +112,7 @@ class Data(object):
         #             break
 
         #        img_name, formula_id = line.strip('\n').split()
-        #        img_path = join(Data.IMAGES_DIR, img_name)
+        #        img_path = join(DataBuilder.IMAGES_DIR, img_name)
         #        img = Image.open(img_path)
         #        img_tensor = transform(img)
         #        pair = (img_tensor, formula_id)

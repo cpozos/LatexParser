@@ -1,6 +1,6 @@
 from architecture.configs import *
 from architecture import *
-from data import Data
+from data import DataBuilder
 #from functools import partial
 
 from torch.utils.data import DataLoader
@@ -8,17 +8,17 @@ from torch.utils.data import DataLoader
 # Script to test the implementations
 
 # 0. Preprocess the raw data (only one time) 
-data = Data()
-voca = data.get_vocabulary()
+data_builder = DataBuilder()
+voca = data_builder.get_vocabulary()
 dic = voca.token_id_dic
 dic = voca.id_token_dic
 
 # 1. Get processed data
-data.build_for('train')
-train_dataset = data.get_dataset()
+data_builder.build_for('train')
+train_dataset = data_builder.get_dataset()
 
 loader = DataLoader (
-    data.get_dataset(),
+    data_builder.get_dataset(),
     batch_size=20,
     #TODO how collate works?
     #collate_fn= partial(collate_fn, voca.token_id_dic),

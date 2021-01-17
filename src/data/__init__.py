@@ -1,1 +1,1 @@
-from data.providers.data import Data
+from data.providers.data_builder import DataBuilder
