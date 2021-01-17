@@ -22,10 +22,11 @@ class ImageLatexDataset(Dataset):
     def load(self):
         if self.is_processed_and_saved():
             self._pairs = torch.load(self.out_data_path)
-            for i, (img, formula) in enumerate(pairs):
-                #TODO why self._max_len?
-                # pair = (img, " ".join(formula.split()[:self._max_len]))
-                pair = (img, " ".join(formula.split()))
+            #for i, (img, formula) in enumerate(self._pairs):
+                ##TODO why self._max_len?
+                ## pair = (img, " ".join(formula.split()[:self._max_len]))
+                # pair = (img, " ".join(formula.split()))
+            self._pairs_sorted = True
         else:
             self._pairs = []
 

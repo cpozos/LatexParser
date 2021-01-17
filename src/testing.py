@@ -18,7 +18,7 @@ data_builder.build_for('train')
 train_dataset = data_builder.get_dataset()
 
 loader = DataLoader (
-    data_builder.get_dataset(),
+    train_dataset,
     batch_size=20,
     #TODO how collate works?
     #collate_fn= partial(collate_fn, voca.token_id_dic),
