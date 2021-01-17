@@ -1,7 +1,9 @@
 import pickle as pkl
 import os
+from collections import Counter
 
 class Vocabulary(object):
+    RAW_DATA_PATH = "src\data\sets\\raw\im2latex_train_filter.lst"
     FILE_PATH = "src\data\sets\\raw\latex_vocab.txt"
     PROCESSED_PATH = "src\\data\\sets\\processed\\vocab.pkl"
 
@@ -23,9 +25,11 @@ class Vocabulary(object):
                 
                 # Updates tokens dictionaries
                 token = x.split('\n')[0]
-                self.add_item(token)
-
+                self.add_item(token)           
         self.id_token_dic = dict((id, token) for token, id in self.token_id_dic.items())
+
+
+
 
     def __len__(self):
         return self.length

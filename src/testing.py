@@ -7,12 +7,18 @@ from data import Data
 # 0. Preprocess the raw data (only one time) 
 data = Data()
 voca = data.get_vocabulary()
-data.build_for('train')
-
 dic = voca.token_id_dic
 dic = voca.id_token_dic
 
 # 1. Get processed data
+data.build_for('train')
+train_dataset = data.get_dataset()
+
+data.build_for('test')
+test_dataset = data.get_dataset()
+
+data.build_for('validation')
+validation_dataset = data.get_dataset()
 
 X = data.get_input_data()
 Y = data.get_target_data()
