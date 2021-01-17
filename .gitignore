@@ -130,7 +130,8 @@ dmypy.json
 
 
 # Raw data
-src/data/sets/raw/images/
+src/data/sets/raw/images/*.jpg
+src/data/sets/raw/images/*.png
 
 # Processed data
 src/data/sets/processed/*.pkl
