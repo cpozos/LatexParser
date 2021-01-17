@@ -1,6 +1,9 @@
 from architecture.configs import *
 from architecture import *
 from data import Data
+#from functools import partial
+
+from torch.utils.data import DataLoader
 
 # Script to test the implementations
 
@@ -14,19 +17,15 @@ dic = voca.id_token_dic
 data.build_for('train')
 train_dataset = data.get_dataset()
 
-data.build_for('test')
-test_dataset = data.get_dataset()
+loader = DataLoader (
+    data.get_dataset(),
+    batch_size=20,
+    #TODO how collate works?
+    #collate_fn= partial(collate_fn, voca.token_id_dic),
+    pin_memory=False,
+    num_workers=4)
 
-data.build_for('validation')
-validation_dataset = data.get_dataset()
-
-X = data.get_input_data()
-Y = data.get_target_data()
-
-# 2. Process the data to be trained
-
-
-# 3. Assign parameters and data to model and create it
+# 2. Assign parameters and data to model and create it
 
 # Configurations
 e_config = EncoderConfig(20)

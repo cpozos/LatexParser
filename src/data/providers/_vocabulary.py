@@ -28,9 +28,6 @@ class Vocabulary(object):
                 self.add_item(token)           
         self.id_token_dic = dict((id, token) for token, id in self.token_id_dic.items())
 
-
-
-
     def __len__(self):
         return self.length
 

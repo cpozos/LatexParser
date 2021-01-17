@@ -94,14 +94,7 @@ class Data(object):
     
     # DATA SETS
     def get_dataset(self):
-        return self._dataset.get_data_set()
-
-    def get_input_data(self):
-        # TODO X data
-        return {}
-
-    def get_target_data(self):
-        return []
+        return self._dataset
 
     #TODO delete it. Deprecated
     #def map_images_latex_dictionary(self, kind, max = 100):
