@@ -21,4 +21,5 @@
 ## Sequence2Sequence 
 
 [1] https://guillaumegenthial.github.io/sequence-to-sequence.html
+
 [2] https://github.com/bentrevett/pytorch-seq2seq/blob/master/1%20-%20Sequence%20to%20Sequence%20Learning%20with%20Neural%20Networks.ipynb
