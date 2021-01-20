@@ -17,3 +17,9 @@
 [6] https://github.com/luopeixiang/im2latex  (PyTorch)
 
 [7] https://guillaumegenthial.github.io/image-to-latex.html
+
+## Sequence2Sequence 
+
+[1] https://guillaumegenthial.github.io/sequence-to-sequence.html
+
+[2] https://github.com/bentrevett/pytorch-seq2seq
