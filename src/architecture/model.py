@@ -14,29 +14,109 @@ class Model(nn.Module):
     def __init__(self, config):
         super(Model, self).__init__()
 
+        self._config = config
+
         # Encoder
-        self.cnn.encoder = Encoder(self.config.encoder_config).build()
+        self.cnn_encoder = Encoder(self._config.enc_out_dim).build()
 
         # Decoder
-        self.rnn_decoder = Decoder(self.config.decoder_config).build()
+        self.rnn_decoder = Decoder(self._config.dec_rnn_h + self._config.emb_size, self._config.dec_rnn_h).build()
 
         # Embedding
-        self.embedding = nn.Embedding(config.out_size, config.emb_size)
+        self.embedding = nn.Embedding(self._config.out_size, self._config.emb_size)
 
-    def create(config):
+        # Linears
+        self.init_wh = nn.Linear(self._config.enc_out_dim, self._config.dec_rnn_h)
+        self.init_wc = nn.Linear(self._config.enc_out_dim, self._config.dec_rnn_h)
+        self.init_wo = nn.Linear(self._config.enc_out_dim, self._config.dec_rnn_h)
 
 
+        # Attention mechanism ??
+        self.beta = nn.Parameter(torch.Tensor(self._config.enc_out_dim))
+        init.uniform_(self.beta, -INIT, INIT)
 
-        return
+        self.W_1 = nn.Linear(self._config.enc_out_dim, self._config.enc_out_dim, bias=False)
+        self.W_2 = nn.Linear(self._config.dec_rnn_h, self._config.enc_out_dim, bias=False)
+        self.W_3 = nn.Linear(self._config.dec_rnn_h + self._config.enc_out_dim, self._config.dec_rnn_h, bias=False)
+        self.W_out = nn.Linear(self._config.dec_rnn_h, self._config.out_size, bias=False)
 
-    def run(self):
+        # Dropout
+        self.dropout = nn.Dropout(p=self._config.dropout)
+        self.uniform = Uniform(0,1)
+
+
+    def forward(self, imgs, formulas, epsilon=1.):
+         """args:
+        imgs: [B, C, H, W]
+        formulas: [B, MAX_LEN]
+        epsilon: probability of the current time step to
+                 use the true previous token
+        return:
+        logits: [B, MAX_LEN, VOCAB_SIZE]
         """
-        docstring
-        """
-        for epoch in range(self.config.epochs):
-            print ("Ep**Ep")
-            iteration = 1
+        
+        # Encoding
+        encoded_imgs = self.cnn_encoder(imgs) # [B, 512, H, W]
+        encoded_imgs = encoded_imgs.permute(0,2,3,1) #[B, H, W, 512]
+        Batch, Height, Width = encoded_imgs.shape
+        encoded_imgs = encoded_imgs.contigous().view(Batch, Height * Width, -1)
 
-        return
+        # Decoder's states
+        dec_states, o_t = self.init_decoder(encoded_imgs)
+
+        # ??
+        logits = []
+        for t in range(formulas.size(1)):
+            tgt = formulas[:,t:t+1]
+
+            if logits and self.uniform.sample().item() > epsilon:
+                tgt = torch.argmax(torch.log(logits[-1]), dim=1, keepdim=True)
+
+            # ont step decoding
+            dec_states, o_t, logit = self.step_decoding(dec_states, o_t, encoded_imgs, tgt)
+            logits.append(logit)
+        
+        logits = torch.stack(logits, dim=1) #[B, MAX_LEN, out_size]
+        return logits
+
+    def init_decoder(self, enc_out):
+        """args:
+            enc_out: the output of row encoder [B, H*W, C]
+          return:
+            h_0, c_0:  h_0 and c_0's shape: [B, dec_rnn_h]
+            init_O : the average of enc_out  [B, dec_rnn_h]
+            for decoder
+        """
+        mean_enc_out = enc_out.mean(dim=1)
+        h = torch.tanh(self.init_wh(mean_enc_out))
+        c = torch.tanh(self.init_wc(mean_enc_out))
+        init_o = torch.tanh(self.init_wo(mean_enc_out))
+        return (h, c), init_o
+            
+
+    def step_decoding(self, dec_states, o_t, enc_out, tgt):
+        """
+        Runing one step decoding
+        """
+
+        prev_y = self.embedding(tgt).squeeze(1)  # [B, emb_size]
+        inp = torch.cat([prev_y, o_t], dim=1)  # [B, emb_size+dec_rnn_h]
+        h_t, c_t = self.rnn_decoder(inp, dec_states)  # h_t:[B, dec_rnn_h]
+        h_t = self.dropout(h_t)
+        c_t = self.dropout(c_t)
+
+        # context_t : [B, C]
+        context_t, attn_scores = self._get_attn(enc_out, h_t)
+
+        # [B, dec_rnn_h]
+        o_t = self.W_3(torch.cat([h_t, context_t], dim=1)).tanh()
+        o_t = self.dropout(o_t)
+
+        # calculate logit
+        logit = F.softmax(self.W_out(o_t), dim=1)  # [B, out_size]
+
+        return (h_t, c_t), o_t, logit
+
+    
 
 

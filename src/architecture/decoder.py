@@ -6,10 +6,9 @@ class Decoder():
     """
     docstring
     """
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, in_size, hidden_size):
+        self._in_size = in_size
+        self._hidden_size = hidden_size
         
     def build(self):
-        return nn.LSTMCell(
-            self.config.dec_rnn_h + self.config.emb_size, 
-            self.config.dec_rnn_h)
+        return nn.LSTMCell (self._in_size, self._hidden_size)
