@@ -29,3 +29,5 @@
 ## Encoder-decoder
 
 [1] https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf
+
+[2] Natural Language Processing with PyTorch, Delip Rao & Brian McMahan, Chapter 8
