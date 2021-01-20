@@ -18,8 +18,14 @@
 
 [7] https://guillaumegenthial.github.io/image-to-latex.html
 
+[8] (Image To Latex with DenseNet Encoder and Joint Attention)[https://www.sciencedirect.com/science/article/pii/S1877050919302686]
+
 ## Sequence2Sequence 
 
 [1] https://guillaumegenthial.github.io/sequence-to-sequence.html
 
 [2] https://github.com/bentrevett/pytorch-seq2seq
+
+## Encoder-decoder
+
+[1] https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf
