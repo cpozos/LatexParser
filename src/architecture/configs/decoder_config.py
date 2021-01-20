@@ -5,3 +5,4 @@ class DecoderConfig(object):
     docstring
     """
     def __init__(self):
+        return

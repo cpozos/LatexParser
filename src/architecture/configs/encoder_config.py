@@ -6,3 +6,4 @@ class EncoderConfig():
     docstring
     """
     def __init__(self):
+        return

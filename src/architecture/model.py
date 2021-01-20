@@ -1,5 +1,6 @@
-from architecture import Encoder
-from architecture import Decoder
+from architecture.encoder import Encoder
+from architecture.decoder import Decoder
+
 
 #Torch
 import torch
@@ -8,6 +9,7 @@ import torch.nn.functional as F
 from torch.nn import init
 from torch.distributions.uniform import Uniform
 
+INIT = 1e-2
 
 class Model(nn.Module):
 
@@ -44,20 +46,26 @@ class Model(nn.Module):
         self.dropout = nn.Dropout(p=self._config.dropout)
         self.uniform = Uniform(0,1)
 
-
     def forward(self, imgs, formulas, epsilon=1.):
-         """args:
+        """args:
         imgs: [B, C, H, W]
         formulas: [B, MAX_LEN]
         epsilon: probability of the current time step to
-                 use the true previous token
+                use the true previous token
         return:
         logits: [B, MAX_LEN, VOCAB_SIZE]
         """
         
+
+
+
+
+
         # Encoding
-        encoded_imgs = self.cnn_encoder(imgs) # [B, 512, H, W]
-        encoded_imgs = encoded_imgs.permute(0,2,3,1) #[B, H, W, 512]
+        #[B, 512, H, W]
+        encoded_imgs = self.cnn_encoder(imgs)
+        #[B, H, W, 512]
+        encoded_imgs = encoded_imgs.permute(0,2,3,1)
         Batch, Height, Width = encoded_imgs.shape
         encoded_imgs = encoded_imgs.contigous().view(Batch, Height * Width, -1)
 
@@ -117,6 +125,23 @@ class Model(nn.Module):
 
         return (h_t, c_t), o_t, logit
 
-    
+    def _get_attn(self, enc_out, h_t):
+        """Attention mechanism
+        args:
+            enc_out: row encoder's output [B, L=H*W, C]
+            h_t: the current time step hidden state [B, dec_rnn_h]
+        return:
+            context: this time step context [B, C]
+            attn_scores: Attention scores
+        """
+        # cal alpha
+        alpha = torch.tanh(self.W_1(enc_out)+self.W_2(h_t).unsqueeze(1))
+        alpha = torch.sum(self.beta*alpha, dim=-1)  # [B, L]
+        alpha = F.softmax(alpha, dim=-1)  # [B, L]
+
+        # cal context: [B, C]
+        context = torch.bmm(alpha.unsqueeze(1), enc_out)
+        context = context.squeeze(1)
+        return context, alpha
 
 
