@@ -24,7 +24,7 @@ value = train_dataset [60000] # it contains the tensor
 
 ## Visualize images
 # save_tensor_as_image(train_dataset[0][0])
-# show_tensor_as_image(train_dataset[1][0])
+show_tensor_as_image(train_dataset[1][0])
 
 loader = DataLoader (
     train_dataset,
