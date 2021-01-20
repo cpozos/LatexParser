@@ -18,5 +18,6 @@ def save_tensor_as_image(pytorch_tensor):
     img_count = img_count + 1
 
 def show_tensor_as_image(pytorch_tensor):
+    plt.grid(False)
     plt.imshow(pytorch_tensor.permute(1,2,0))
     plt.show()
