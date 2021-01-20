@@ -2,6 +2,7 @@
 from architecture.configs import ModelConfig
 from architecture import *
 from data import DataBuilder
+from utilities.tensor import *
 #from functools import partial
 
 # TORCH
@@ -20,6 +21,10 @@ dic = vocabulary.id_token_dic
 data_builder.build_for('train', True)
 train_dataset = data_builder.get_dataset()
 value = train_dataset [60000] # it contains the tensor 
+
+## Visualize images
+# save_tensor_as_image(train_dataset[0][0])
+# show_tensor_as_image(train_dataset[1][0])
 
 loader = DataLoader (
     train_dataset,
