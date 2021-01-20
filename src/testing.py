@@ -41,5 +41,4 @@ optimizer = optim.Adam(model.parameters(), lr = 3e-4)
 
 
 # 4. Train model
-a = 5 * 10
 # 5. Validate model
