@@ -18,15 +18,25 @@
 
 [7] https://guillaumegenthial.github.io/image-to-latex.html
 
-[8] (Image To Latex with DenseNet Encoder and Joint Attention)[https://www.sciencedirect.com/science/article/pii/S1877050919302686]
+[8] [Image To Latex with DenseNet Encoder and Joint Attention](https://www.sciencedirect.com/science/article/pii/S1877050919302686)
 
-## Sequence2Sequence 
+## CNN
+
+[1] [CNN Standford class](https://cs231n.github.io/)
+
+## NLP
+
+[1] [NLP Standford class](https://web.stanford.edu/class/cs224n/)
+
+[2] [Batching](https://www.youtube.com/watch?v=U4WB9p6ODjM)
+
+### Sequence2Sequence 
 
 [1] https://guillaumegenthial.github.io/sequence-to-sequence.html
 
 [2] https://github.com/bentrevett/pytorch-seq2seq
 
-## Encoder-decoder
+### Encoder-decoder
 
 [1] https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf
 
