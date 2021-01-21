@@ -49,7 +49,7 @@ def collate_fn(token_id_dic, batch):
     # targets for calculating loss , end with END_TOKEN
     tgt4cal_loss = formulas2tensor(add_end_token(formulas), token_id_dic)
     imgs = torch.stack(imgs, dim=0)
-    
+
     return imgs, tgt4training, tgt4cal_loss
 
 # 2. Create Loaders
@@ -84,6 +84,8 @@ epochs = 10
 training_losses = []
 valid_losses = []
 for epoch in range(epochs):
+
+    # Training
     batch_losses = []
     for imgs_batch, formulas_batch in data_loader:
         model.train()
@@ -107,19 +109,18 @@ for epoch in range(epochs):
     training_loss = np.mean(batch_losses)
     training_losses.append(training_loss)
 
-    # Evalueation
+    # Evaluation
+    batch_losses = []
     with torch.no_grad(): # This disable any gradient calculation (better performance)
-        batch_losses = []
         for imgs_batch, formulas_batch in valid_loader:
-
             mode.eval()
-
             pred = model(imgs_batch, formulas_batch)
+
+            # Compute loss
             batch_loss = loss_fn(formulas_batch, pred)
             batch_losses.append(batch_loss.item()) 
 
-        valid_loss = np.mean(batch_losses)
-        valid_losses.append(valid_loss)
+    valid_loss = np.mean(batch_losses)
+    valid_losses.append(valid_loss)
 
-        print(f"[{epoch+1}] Training loss: {training_loss:.3f}\t Validation loss: {validation_loss:.3f}")
-
+    print(f"[{epoch+1}] Training loss: {training_loss:.3f}\t Validation loss: {validation_loss:.3f}")
