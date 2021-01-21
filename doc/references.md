@@ -20,13 +20,21 @@
 
 [8] (Image To Latex with DenseNet Encoder and Joint Attention)[https://www.sciencedirect.com/science/article/pii/S1877050919302686]
 
-## Sequence2Sequence 
+## CNN
+
+[1] http://cs231n.stanford.edu/
+
+## NLP
+
+[2] https://web.stanford.edu/class/cs224n/
+
+### Sequence2Sequence 
 
 [1] https://guillaumegenthial.github.io/sequence-to-sequence.html
 
 [2] https://github.com/bentrevett/pytorch-seq2seq
 
-## Encoder-decoder
+### Encoder-decoder
 
 [1] https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf
 
