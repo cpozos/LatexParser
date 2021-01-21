@@ -18,15 +18,17 @@
 
 [7] https://guillaumegenthial.github.io/image-to-latex.html
 
-[8] (Image To Latex with DenseNet Encoder and Joint Attention)[https://www.sciencedirect.com/science/article/pii/S1877050919302686]
+[8] [Image To Latex with DenseNet Encoder and Joint Attention](https://www.sciencedirect.com/science/article/pii/S1877050919302686)
 
 ## CNN
 
-[1] http://cs231n.stanford.edu/
+[1] [CNN Standford class](https://cs231n.github.io/)
 
 ## NLP
 
-[2] https://web.stanford.edu/class/cs224n/
+[1] [NLP Standford class](https://web.stanford.edu/class/cs224n/)
+
+[2] [Batching](https://www.youtube.com/watch?v=U4WB9p6ODjM)
 
 ### Sequence2Sequence 
 
