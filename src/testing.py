@@ -46,7 +46,7 @@ loader = DataLoader (
 # 2. Creates model and optimizer?
 
 model_config = ModelConfig(
-    out_size = vocabulary.__len__()
+    out_size = len(vocabulary)
 )
 model = Model(model_config)
 optimizer = optim.Adam(model.parameters(), lr = 3e-4)
