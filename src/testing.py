@@ -40,7 +40,7 @@ loader = DataLoader (
     #TODO how collate works?
     # https://discuss.pytorch.org/t/how-to-create-a-dataloader-with-variable-size-input/8278
     #collate_fn= partial(collate_fn, voca.token_id_dic),
-    pin_memory=False,
+    pin_memory=False, # It must be False (no GPU): https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723
     num_workers=4)
 
 # 2. Creates model and optimizer?
