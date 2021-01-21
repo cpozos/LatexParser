@@ -61,7 +61,8 @@ class DataBuilder(object):
 
             counter = Counter()
             for pair in self:
-                formula = self._latex_formulas[pair[1]].split()
+                formula_id = pair[1]
+                formula = self._latex_formulas[formula_id].split()
                 counter.update(formula)
 
             for word, count in counter.most_common():
