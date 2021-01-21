@@ -33,8 +33,24 @@ randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in rang
 #    print(t.shape)
 #    show_tensor_as_image(t)
 
-def collate_fn():
-    pass
+def collate_fn(token_id_dic, batch):
+    # filter the pictures that have different weight or height
+    size = batch[0][0].size()
+    batch = [img_formula for img_formula in batch if img_formula[0].size() == size]
+
+    # sort by the length of formula
+    batch.sort(key=lambda img_formula: len(img_formula[1].split()), reverse=True)
+    imgs, formulas = zip(*batch)
+    formulas = [formula.split() for formula in formulas]
+
+    # targets for training , begin with START_TOKEN
+    tgt4training = formulas2tensor(add_start_token(formulas), token_id_dic)
+
+    # targets for calculating loss , end with END_TOKEN
+    tgt4cal_loss = formulas2tensor(add_end_token(formulas), token_id_dic)
+    imgs = torch.stack(imgs, dim=0)
+    
+    return imgs, tgt4training, tgt4cal_loss
 
 # 2. Create Loaders
 data_loader = DataLoader (
