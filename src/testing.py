@@ -1,3 +1,5 @@
+import random
+
 # PROJECT
 from architecture.configs import ModelConfig
 from architecture import *
@@ -18,10 +20,16 @@ dic = vocabulary.token_id_dic
 dic = vocabulary.id_token_dic
 
 # 1. Get processed data
-data_builder.build_for('train', True)
+data_builder.build_for('train', False)
 train_dataset = data_builder.get_dataset()
 value = train_dataset [60000] # it contains the tensor 
 
+
+randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in range(0,100)]
+
+for t in randoms:
+    print(t.shape)
+    
 ## Visualize images
 # save_tensor_as_image(train_dataset[0][0])
 show_tensor_as_image(train_dataset[1][0])
@@ -30,6 +38,7 @@ loader = DataLoader (
     train_dataset,
     batch_size=20,
     #TODO how collate works?
+    # https://discuss.pytorch.org/t/how-to-create-a-dataloader-with-variable-size-input/8278
     #collate_fn= partial(collate_fn, voca.token_id_dic),
     pin_memory=False,
     num_workers=4)
