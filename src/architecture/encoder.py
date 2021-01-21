@@ -12,11 +12,11 @@ class Encoder(object):
     def build(self):
         return nn.Sequential(
 
-            # (BatchSize, NumberChannels, Height, Width)
+            # [BatchSize, NumberChannels, Height, Width]
             # Square kernels 3x3
-            nn.Conv2d(in_channels= 3, out_channels= 64, kernel_size= 3, stride= 1, padding=1),
+            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size= 2, stride= 2, padding=1),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
 
             nn.Conv2d(64,128,3,1,1),
             nn.ReLU(),

@@ -17,33 +17,37 @@ class Model(nn.Module):
         super(Model, self).__init__()
 
         self._config = config
+        out_size = config.out_size
+        enc_out_dim = config.enc_out_dim
+        dec_rnn_h = config.dec_rnn_h
+        emb_size = config.emb_size
+        dropout = config.dropout
 
         # Encoder
-        self.cnn_encoder = Encoder(self._config.enc_out_dim).build()
+        self.cnn_encoder = Encoder(enc_out_dim).build()
 
         # Decoder
-        self.rnn_decoder = Decoder(self._config.dec_rnn_h + self._config.emb_size, self._config.dec_rnn_h).build()
+        self.rnn_decoder = Decoder(dec_rnn_h + emb_size, dec_rnn_h).build()
 
         # Embedding
-        self.embedding = nn.Embedding(self._config.out_size, self._config.emb_size)
+        self.embedding = nn.Embedding(num_embeddings=out_size, embedding_dim=emb_size)
 
         # Linears
-        self.init_wh = nn.Linear(self._config.enc_out_dim, self._config.dec_rnn_h)
-        self.init_wc = nn.Linear(self._config.enc_out_dim, self._config.dec_rnn_h)
-        self.init_wo = nn.Linear(self._config.enc_out_dim, self._config.dec_rnn_h)
-
+        self.init_wh = nn.Linear(in_features=enc_out_dim, out_features=dec_rnn_h)
+        self.init_wc = nn.Linear(enc_out_dim, dec_rnn_h)
+        self.init_wo = nn.Linear(enc_out_dim, dec_rnn_h)
 
         # Attention mechanism ??
-        self.beta = nn.Parameter(torch.Tensor(self._config.enc_out_dim))
+        self.beta = nn.Parameter(torch.Tensor(enc_out_dim))
         init.uniform_(self.beta, -INIT, INIT)
 
-        self.W_1 = nn.Linear(self._config.enc_out_dim, self._config.enc_out_dim, bias=False)
-        self.W_2 = nn.Linear(self._config.dec_rnn_h, self._config.enc_out_dim, bias=False)
-        self.W_3 = nn.Linear(self._config.dec_rnn_h + self._config.enc_out_dim, self._config.dec_rnn_h, bias=False)
-        self.W_out = nn.Linear(self._config.dec_rnn_h, self._config.out_size, bias=False)
+        self.W_1 = nn.Linear(enc_out_dim, enc_out_dim, bias=False)
+        self.W_2 = nn.Linear(dec_rnn_h, enc_out_dim, bias=False)
+        self.W_3 = nn.Linear(dec_rnn_h + enc_out_dim, dec_rnn_h, bias=False)
+        self.W_out = nn.Linear(dec_rnn_h, out_size, bias=False)
 
         # Dropout
-        self.dropout = nn.Dropout(p=self._config.dropout)
+        self.dropout = nn.Dropout(p=dropout)
         self.uniform = Uniform(0,1)
 
     def forward(self, imgs, formulas, epsilon=1.):
@@ -56,18 +60,12 @@ class Model(nn.Module):
         logits: [B, MAX_LEN, VOCAB_SIZE]
         """
         
-
-
-
-
-
         # Encoding
-        #[B, 512, H, W]
-        encoded_imgs = self.cnn_encoder(imgs)
-        #[B, H, W, 512]
-        encoded_imgs = encoded_imgs.permute(0,2,3,1)
+        #[B, 3, H, W]
+        encoded_imgs = self.cnn_encoder(imgs) #[B, 512, H, W]
+        encoded_imgs = encoded_imgs.permute(0,2,3,1) #[B, H, W, 512]
         Batch, Height, Width = encoded_imgs.shape
-        encoded_imgs = encoded_imgs.contigous().view(Batch, Height * Width, -1)
+        encoded_imgs = encoded_imgs.contigous().view(Batch, Height * Width, -1) #[B, H*W, 512]
 
         # Decoder's states
         dec_states, o_t = self.init_decoder(encoded_imgs)
