@@ -2,14 +2,22 @@ import pickle as pkl
 import os
 from collections import Counter
 
+# Project
+from utilities.system import get_system_path
+
 class Vocabulary(object):
-    RAW_DATA_PATH = "src\data\sets\\raw\im2latex_train_filter.lst"
-    FILE_PATH = "src\data\sets\\raw\latex_vocab.txt"
+    RAW_DATA_PATH = "src\\data\\sets\\raw\\im2latex_train_filter.lst"
+    FILE_PATH = "src\\data\\sets\\raw\latex_vocab.txt"
     PROCESSED_PATH = "src\\data\\sets\\processed\\vocab.pkl"
 
     def __init__(self):
-        self.load()
+        # Fix paths
+        Vocabulary.RAW_DATA_PATH = get_system_path(Vocabulary.RAW_DATA_PATH)
+        Vocabulary.FILE_PATH = get_system_path(Vocabulary.FILE_PATH)
+        Vocabulary.PROCESSED_PATH = get_system_path(Vocabulary.PROCESSED_PATH)
 
+        self.load()
+        
     def _initialize(self, use_txt = False):
 
         # Build the dictionaries with default values

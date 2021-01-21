@@ -4,24 +4,33 @@ from collections import Counter
 
 import pickle as pkl
 import torch
+
+# Project
 from data.providers._vocabulary import Vocabulary
 from data.providers._img_latex_dataset import ImageLatexDataset
+from utilities.system import get_system_path
 
 class DataBuilder(object):
     KINDS = ["train", "validation", "test"]
-    LATEX_FORMULAS_PATH = 'src\data\sets\\raw\im2latex_formulas.norm.lst'
-    IMAGE_LATEX_DIC_PATH = "src\data\sets\\raw\im2latex_{}_filter.lst"
-    IMAGES_DIR = 'src\\data\\sets\\raw\images'
+    LATEX_FORMULAS_PATH = 'src\\data\\sets\\raw\\im2latex_formulas.norm.lst'
+    IMAGE_LATEX_DIC_PATH = "src\\data\\sets\\raw\\im2latex_{}_filter.lst"
+    IMAGES_DIR = 'src\\data\\sets\\raw\\images'  
 
     """
     docstring
     """
     def __init__(self):
+        # Fix paths
+        DataBuilder.LATEX_FORMULAS_PATH = get_system_path(DataBuilder.LATEX_FORMULAS_PATH)
+        DataBuilder.IMAGE_LATEX_DIC_PATH = get_system_path(DataBuilder.IMAGE_LATEX_DIC_PATH)
+        DataBuilder.IMAGES_DIR = get_system_path(DataBuilder.IMAGES_DIR)
+
         # List of formulas
         self._process_latex_formulas()
         
         # Vocabulary mapping
         self._process_vocabulary()
+        
 
     def __iter__(self):
         with open(self._image_latex_data_path) as file:
@@ -47,7 +56,8 @@ class DataBuilder(object):
         self._vocabulary = Vocabulary()
         if not self._vocabulary.is_already_created():
             # Sets the path of the training data
-            self._image_latex_data_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format('train')
+            path = DataBuilder.IMAGE_LATEX_DIC_PATH
+            self._image_latex_data_path = path.format('train')
 
             counter = Counter()
             for pair in self:
@@ -66,7 +76,8 @@ class DataBuilder(object):
         assert kind in DataBuilder.KINDS
         
         # Sets data path
-        path = DataBuilder.IMAGE_LATEX_DIC_PATH.format(kind)
+        path = DataBuilder.IMAGE_LATEX_DIC_PATH
+        path = path.format(kind)
 
         # Assigns the data set 
         self._dataset = ImageLatexDataset(kind, force)
@@ -95,6 +106,7 @@ class DataBuilder(object):
     # DATA SETS
     def get_dataset(self):
         return self._dataset
+
 
     #TODO delete it. Deprecated
     #def map_images_latex_dictionary(self, kind, max = 100):

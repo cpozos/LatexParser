@@ -7,11 +7,17 @@ from os.path import join
 from torchvision import transforms
 from torch.utils.data import Dataset
 
+# Project
+from utilities.system import get_system_path
+
 
 class ImageLatexDataset(Dataset):
     OUTPUT_DIR = "src\\data\\sets\\processed"
 
     def __init__(self, output_filename, force = False, max_len = 300):
+        # Fix paths
+        ImageLatexDataset.OUTPUT_DIR = get_system_path(ImageLatexDataset.OUTPUT_DIR)
+
         self.out_data_path = join(ImageLatexDataset.OUTPUT_DIR, output_filename + '.pkl')     
         self._max_len = max_len
         self._pairs_sorted = False
