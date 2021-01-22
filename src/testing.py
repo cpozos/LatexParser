@@ -19,8 +19,6 @@ from utilities.training import *
 from utilities.persistance import *
 
 def run():
-    # Frequencia to print loss
-    print_freq = 20 #each 20 steps
 
     # GPU
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -53,7 +51,7 @@ def run():
         collate_fn= partial(collate_fn, vocabulary.token_id_dic),
         pin_memory=False, # It must be False (no GPU): https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723
         shuffle=True,
-        num_workers=3
+        num_workers=4
     )
 
     valid_loader = DataLoader(
@@ -79,6 +77,9 @@ def run():
 
     # 3. Train loop
     #input ("Press Enter to continue with the training")
+    
+    # Frequencia to print loss
+    print_freq = 20 #each 20 steps
 
     #device = 
     loss_fn = nn.MSELoss(reduction='mean')
@@ -124,8 +125,8 @@ def run():
             step_losses.append(step_loss.item())
 
             if step % print_freq == 0:
-                print(f"[Train] Epoch {epoch} Step {i} Loss {statistics.mean(step_losses):.4f}")
-                
+                print(f"[Train] Epoch {epoch} Step {step} Loss {statistics.mean(step_losses):.4f}")
+
             step += 1
             total_step += 1
         
@@ -135,7 +136,7 @@ def run():
         # Validation
         mode.eval()
         step_losses = []
-        i = 0
+        step = 0
         with torch.no_grad(): # This disable any gradient calculation (better performance)
             for imgs_batch, tgt4training, tgt4loss_batch in valid_loader:
 
@@ -149,8 +150,8 @@ def run():
                 step_loss = cal_loss(pred, tgt4loss_batch)
                 step_losses.append(step_loss.item()) 
 
-                print(f"[Valid] Epoch {epoch} Step {i} Loss {statistics.mean(step_losses):.4f}")
-                i += 1
+                print(f"[Valid] Epoch {epoch} Step {step} Loss {statistics.mean(step_losses):.4f}")
+                step += 1
 
         valid_loss = statistics.mean(step_losses)
         if valid_loss < best_valid_loss: #best valid loss

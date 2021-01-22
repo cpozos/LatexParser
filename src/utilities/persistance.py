@@ -1,4 +1,4 @@
-from system import get_current_path
+from utilities.system import get_current_path
 import torch
 
 def save_model(self, model_name, model):
