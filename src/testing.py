@@ -34,9 +34,9 @@ def run():
     dic = vocabulary.id_token_dic
 
     # 1. Get processed data
-    data_builder.build_for('train', max_count=1000)
+    data_builder.build_for('train', max_count=50)
     train_dataset = data_builder.get_dataset()
-    data_builder.build_for('validation', max_count=200)
+    data_builder.build_for('validation', max_count=10)
     valid_dataset = data_builder.get_dataset()
 
     # 1.1 Visualize processed data
@@ -86,9 +86,6 @@ def run():
 
     #input ("Press Enter to continue with the training")
     
-    # Logging
-    print_freq = 1 #each n steps
-
     # For epsilon calculation
     init_epoch = 1
     total_step = (init_epoch-1)*len(train_loader)
@@ -101,8 +98,8 @@ def run():
     best_valid_loss = 1e18
     
     # For profiling
-    logger = TrainingLogger()
-    epochs = 10
+    logger = TrainingLogger(print_freq=10)
+    epochs = 1
     for epoch in range(epochs):
 
         step_losses = []
@@ -130,7 +127,7 @@ def run():
             step_losses.append(step_loss.item())
 
             # Print results
-            logger.log_train_step(epoch, step, train_loader, step_losses)
+            logger.log_train_step(epoch, step, len(train_loader), statistics.mean(step_losses))
 
             step += 1
             total_step += 1
@@ -155,7 +152,7 @@ def run():
                 step_losses.append(step_loss.item()) 
 
                 # Print results
-                logger.log_val_step(epoc, step_losses)
+                logger.log_val_step(epoch, statistics.mean(step_losses))
 
         # Best validation loss
         valid_loss = statistics.mean(step_losses)
@@ -167,11 +164,11 @@ def run():
         lr_scheduler.step(valid_loss)
         valid_losses.append(valid_loss)
 
-        # Save model
-        save_model("ckpt-{}-{:.4f}".format(epoch,valid_loss))
+        # Save model checkpoint
+        # save_model("ckpt-{}-{:.4f}".format(epoch,valid_loss), model)
 
         # Print results
-        logger.log_epoc(epoch, training_losses, valid_losses)
+        logger.log_epoch(epoch, statistics.mean(training_losses), statistics.mean(valid_losses))
 
     del logger
 
@@ -179,7 +176,7 @@ def run():
     # **********************  Predictions  *******************************
     # ********************************************************************
 
-    
+
 
 
 

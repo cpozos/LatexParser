@@ -16,3 +16,6 @@ def get_system_path(path):
 
 def get_current_path():
    return os.path.abspath(os.getcwd())
+
+def join_paths(path, path2):
+   return join(path, path2)

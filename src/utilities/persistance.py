@@ -1,8 +1,9 @@
 from utilities.system import get_current_path
-import torch
+from utilities.system import join_paths
 
-def save_model(self, model_name, model):
-    save_path = join(get_current_path(), model_name+'.pt')
+import torch
+def save_model(model_name, model):
+    save_path = join_paths(get_current_path(), model_name+'.pt')
     print("Saving checkpoint to {}".format(save_path))
 
     torch.save(model, save_path)
