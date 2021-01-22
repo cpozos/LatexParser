@@ -17,6 +17,10 @@ from utilities.tensor import *
 from utilities.training import *
 
 def run():
+
+    # GPU
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+
     # 0. Preprocess the raw data (only one time) 
     data_builder = DataBuilder()
     vocabulary = data_builder.get_vocabulary()
@@ -129,4 +133,6 @@ def run():
     # model = torch.load(get_current_path())
 
 if __name__ == '__main__':
+    gpu = torch.cuda.is_available()
+    print(gpu)
     run()
