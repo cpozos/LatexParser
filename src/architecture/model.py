@@ -52,7 +52,11 @@ class Model(nn.Module):
 
     def forward(self, imgs, formulas, epsilon=1.):
         """args:
-        imgs: [B, C, H, W]
+        imgs: [B, C, H, W] where 
+            B: Batch size
+            C: Channels
+            H: Height
+            W: Width
         formulas: [B, MAX_LEN]
         epsilon: probability of the current time step to
                 use the true previous token
@@ -61,10 +65,9 @@ class Model(nn.Module):
         """
         
         # Encoding
-        #[B, 3, H, W]
-        encoded_imgs = self.cnn_encoder(imgs) #[B, 512, H, W]
-        encoded_imgs = encoded_imgs.permute(0,2,3,1) #[B, H, W, 512]
-        Batch, Height, Width = encoded_imgs.shape
+        encoded_imgs = self.cnn_encoder(imgs) #[B, 512, H', W']
+        encoded_imgs = encoded_imgs.permute(0,2,3,1) #[B, H', W', 512]
+        Batch, Height, Width, _ = encoded_imgs.shape
         encoded_imgs = encoded_imgs.contigous().view(Batch, Height * Width, -1) #[B, H*W, 512]
 
         # Decoder's states

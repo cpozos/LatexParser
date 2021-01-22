@@ -6,6 +6,10 @@ from collections import Counter
 from utilities.system import get_system_path
 
 class Vocabulary(object):
+    START_TOKEN_ID = 0
+    PAD_TOKEN_ID = 1
+    END_TOKEN_ID =2
+    UNK_TOKEN_ID = 3
     RAW_DATA_PATH = "src\\data\\sets\\raw\\im2latex_train_filter.lst"
     FILE_PATH = "src\\data\\sets\\raw\latex_vocab.txt"
     PROCESSED_PATH = "src\\data\\sets\\processed\\vocab.pkl"
@@ -22,7 +26,10 @@ class Vocabulary(object):
 
         # Build the dictionaries with default values
         self.token_id_dic = {
-            'PAD': 0, 'GO': 1, 'EOS': 2, 'UNKNOWN': 3
+            '<s>': Vocabulary.START_TOKEN_ID, 
+            '</s>': Vocabulary.END_TOKEN_ID, 
+            '<pad>': Vocabulary.PAD_TOKEN_ID,
+            '<unk>': Vocabulary.UNK_TOKEN_ID
         }
 
         # Uses the latex_vocab.txt file
@@ -33,6 +40,7 @@ class Vocabulary(object):
                 # Updates tokens dictionaries
                 token = x.split('\n')[0]
                 self.add_item(token)           
+        
         self.id_token_dic = dict((id, token) for token, id in self.token_id_dic.items())
 
 

@@ -6,8 +6,8 @@ import pickle as pkl
 import torch
 
 # Project
-from data.providers._vocabulary import Vocabulary
-from data.providers._img_latex_dataset import ImageLatexDataset
+from data.vocabulary import Vocabulary
+from data.img_latex_dataset import ImageLatexDataset
 from utilities.system import get_system_path
 
 class DataBuilder(object):

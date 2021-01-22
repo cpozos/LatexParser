@@ -1,18 +1,20 @@
-# 
+# Dependencies 
 import random
 import numpy as np
 from functools import partial
+
+# TORCH
+from torch.utils.data import DataLoader
+import torch.optim as optim
+import torch.nn as nn
+from torch.nn.utils import clip_grad_norm_
 
 # PROJECT
 from architecture.configs import ModelConfig
 from architecture import *
 from data import DataBuilder
 from utilities.tensor import *
-
-# TORCH
-from torch.utils.data import DataLoader
-import torch.optim as optim
-import torch.nn as nn
+from utilities.training import *
 
 
 # 0. Preprocess the raw data (only one time) 
@@ -33,24 +35,6 @@ randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in rang
 #    print(t.shape)
 #    show_tensor_as_image(t)
 
-def collate_fn(token_id_dic, batch):
-    # filter the pictures that have different weight or height
-    size = batch[0][0].size()
-    batch = [img_formula for img_formula in batch if img_formula[0].size() == size]
-
-    # sort by the length of formula
-    batch.sort(key=lambda img_formula: len(img_formula[1].split()), reverse=True)
-    imgs, formulas = zip(*batch)
-    formulas = [formula.split() for formula in formulas]
-
-    # targets for training , begin with START_TOKEN
-    tgt4training = formulas2tensor(add_start_token(formulas), token_id_dic)
-
-    # targets for calculating loss , end with END_TOKEN
-    tgt4cal_loss = formulas2tensor(add_end_token(formulas), token_id_dic)
-    imgs = torch.stack(imgs, dim=0)
-
-    return imgs, tgt4training, tgt4cal_loss
 
 # 2. Create Loaders
 data_loader = DataLoader (
@@ -60,7 +44,7 @@ data_loader = DataLoader (
     # https://discuss.pytorch.org/t/how-to-create-a-dataloader-with-variable-size-input/8278
     collate_fn= partial(collate_fn, vocabulary.token_id_dic),
     pin_memory=False, # It must be False (no GPU): https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723
-    num_workers=4
+    num_workers=0
 )
 
 valid_loader = DataLoader(
@@ -87,14 +71,16 @@ for epoch in range(epochs):
 
     # Training
     batch_losses = []
-    for imgs_batch, formulas_batch in data_loader:
+
+    # 
+    for imgs_batch, tgt4training_batch, tgt4loss_batch in data_loader:
         model.train()
 
         # Make prediction
-        result = model(imgs_batch, formulas_batch)
+        result = model(imgs_batch, tgt4training_batch)
 
         # Compute Loss
-        loss = loss_fn(formulas_batch, result)
+        loss = cal_loss(result, tgt4loss_batch)
         
         # Gradients
         loss.backward()
