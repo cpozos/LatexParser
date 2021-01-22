@@ -133,6 +133,4 @@ def run():
     # model = torch.load(get_current_path())
 
 if __name__ == '__main__':
-    gpu = torch.cuda.is_available()
-    print(gpu)
     run()
