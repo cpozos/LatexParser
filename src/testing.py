@@ -77,7 +77,8 @@ def run():
         batch_losses = []
 
         # 
-        for imgs_batch, tgt4training_batch, tgt4loss_batch in data_loader:
+        for i, data in enumerate(data_loader):
+            imgs_batch, tgt4training_batch, tgt4loss_batch  = data
             model.train()
 
             # Make prediction
@@ -96,7 +97,7 @@ def run():
             # Add loss
             batch_losses.append(loss.item())
 
-            print(f"Train batch step. Batch loss {loss.item()}")
+            print(f"Train batch step {i}. Batch loss {loss.item()}")
         
         training_loss = np.mean(batch_losses)
         training_losses.append(training_loss)
