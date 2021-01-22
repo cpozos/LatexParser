@@ -53,10 +53,10 @@ def run():
     )
 
     # 2. Creates model and optimizer?
-
+    learning_rate = 0.01
     model_config = ModelConfig(out_size = len(vocabulary))
     model = Model(model_config)
-    optimizer = optim.Adam(model.parameters(), lr = 3e-4)
+    optimizer = optim.Adam(model.parameters(), lr = learning_rate)
 
 
     # 3. Train loop
