@@ -44,7 +44,7 @@ def run():
         # https://discuss.pytorch.org/t/how-to-create-a-dataloader-with-variable-size-input/8278
         collate_fn= partial(collate_fn, vocabulary.token_id_dic),
         pin_memory=False, # It must be False (no GPU): https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723
-        num_workers=4
+        num_workers=3
     )
 
     valid_loader = DataLoader(
@@ -123,6 +123,8 @@ def run():
 
 
     print(f"Training finished ( {time.time()-start} )")
+    torch.save(model,get_current_path())
+    # model = torch.load(get_current_path())
 
 if __name__ == '__main__':
     run()

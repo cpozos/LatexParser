@@ -13,3 +13,6 @@ def get_system_path(path):
     abs_path = abs_path.replace("notebooks", "")
 
     return join(abs_path, path)
+
+def get_current_path():
+   return os.path.abspath(os.getcwd())
