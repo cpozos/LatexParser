@@ -53,7 +53,7 @@ def run():
         collate_fn= partial(collate_fn, vocabulary.token_id_dic),
         pin_memory=False, # It must be False (no GPU): https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723
         shuffle=True,
-        num_workers=1
+        num_workers=3
     )
 
     valid_loader = DataLoader(
@@ -102,8 +102,7 @@ def run():
     for epoch in range(epochs):
 
         step_losses = []
-        i = 0
-
+        step = 0
         for imgs_batch, tgt4training_batch, tgt4loss_batch in train_loader:
             model.train()
 
@@ -126,8 +125,8 @@ def run():
 
             if step % print_freq == 0:
                 print(f"[Train] Epoch {epoch} Step {i} Loss {statistics.mean(step_losses):.4f}")
-
-            i += 1
+                
+            step += 1
             total_step += 1
         
         training_loss = statistics.mean(step_losses)
@@ -163,12 +162,14 @@ def run():
         lr_scheduler.step(valid_loss)
         valid_losses.append(valid_loss)
 
+        # Save model
+        save_model("ckpt-{}-{:.4f}".format(epoch,valid_loss))
+
+        # Print results
         print(f"[Epoch finished] Epoch {epoch} TrainLoss {training_loss:.4f}\t ValidLoss {valid_loss:.4f} Time {time.time()-start}")
         
-        save_model("ckpt-{}-{:.4f}".format(epoch,valid_loss))
     
     print(f"Training finished ( {time.time()-start} )")
-    # model = torch.load(get_current_path())
 
 if __name__ == '__main__':
     run()
