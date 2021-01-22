@@ -17,6 +17,7 @@ from data import DataBuilder
 from utilities.tensor import *
 from utilities.training import *
 from utilities.persistance import *
+from utilities.logger import *
 
 def run():
     #BATCH 
@@ -98,11 +99,9 @@ def run():
     training_losses = []
     valid_losses = []
     best_valid_loss = 1e18
-
+    
     # For profiling
-    start = time.time()
-    print(f"Training initialized: ")
-
+    logger = TrainingLogger()
     epochs = 10
     for epoch in range(epochs):
 
@@ -130,8 +129,8 @@ def run():
             # Add loss
             step_losses.append(step_loss.item())
 
-            if step % print_freq == 0:
-                print(f"[Train] Epoch {epoch} Step {step}/{len(train_loader)} Loss {statistics.mean(step_losses):.4f}")
+            # Print results
+            logger.log_train_step(epoch, step, train_loader, step_losses)
 
             step += 1
             total_step += 1
@@ -155,7 +154,8 @@ def run():
                 step_loss = cal_loss(pred, tgt4loss_batch)
                 step_losses.append(step_loss.item()) 
 
-                print(f"[Valid] Epoch {epoch} Loss {statistics.mean(step_losses):.4f}")
+                # Print results
+                logger.log_val_step(epoc, step_losses)
 
         # Best validation loss
         valid_loss = statistics.mean(step_losses)
@@ -171,16 +171,16 @@ def run():
         save_model("ckpt-{}-{:.4f}".format(epoch,valid_loss))
 
         # Print results
-        print(f"[Epoch finished] Epoch {epoch} TrainLoss {statistics.mean(training_loss):.4f} ValidLoss {statistics.mean(valid_loss):.4f} Time {time.time()-start}")
-    
-    print(f"Training finished ( {time.time()-start} )")
+        logger.log_epoc(epoch, training_losses, valid_losses)
 
+    del logger
 
     # ********************************************************************
     # **********************  Predictions  *******************************
     # ********************************************************************
 
     
+
 
 
 if __name__ == '__main__':
