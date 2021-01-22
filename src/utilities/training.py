@@ -26,7 +26,6 @@ def formulas2tensor(formulas, token2id):
     """
         Makes the convertion from latex formula to tensor
     """
-
     batch_size = len(formulas)
     max_len = len(formulas[0])
     tensors = torch.ones(batch_size, max_len, dtype=torch.long) * Vocabulary.PAD_TOKEN_ID
@@ -44,25 +43,37 @@ def add_end_token(formulas):
 
 def cal_loss(logits, targets):
     """
-    
-
     args:
         logits: probability distribution return by model
                 [B, MAX_LEN, voc_size]
         targets: target formulas
                 [B, MAX_LEN]
     """
-    ones_like = torch.ones_like(targets)
-    padding = ones_like * Vocabulary.PAD_TOKEN_ID
-    mask = (targets != padding)
+    # targets [1 29 34 1]
+    padding = torch.ones_like(targets) * Vocabulary.PAD_TOKEN_ID # [1 1 1 1]
+    mask = (targets != padding)  # [False True True False]
 
     targets = targets.masked_select(mask)
+
     logits = logits.masked_select(
         mask.unsqueeze(2).expand(-1, -1, logits.size(2))
     ).contiguous().view(-1, logits.size(2))
     logits = torch.log(logits)
 
     assert logits.size(0) == targets.size(0)
+    return F.nll_loss(logits, targets)
 
-    loss = F.nll_loss(logits, targets)
-    return loss
+def cal_epsilon(k, step, method):
+    """
+    Reference:
+        Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks
+        See details in https://arxiv.org/pdf/1506.03099.pdf
+    """
+    assert method in ['inv_sigmoid', 'exp', 'teacher_forcing']
+
+    if method == 'exp':
+        return k**step
+    elif method == 'inv_sigmoid':
+        return k/(k+math.exp(step/k))
+    else:
+        return 1.
