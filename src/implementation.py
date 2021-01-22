@@ -14,8 +14,10 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 # PROJECT
 from architecture import *
 from data import DataBuilder
-from utilities.tensor import *
 from utilities.training import *
+from utilities.testing import *
+
+from utilities.tensor import *
 from utilities.persistance import *
 from utilities.logger import *
 
@@ -176,8 +178,28 @@ def run():
     # **********************  Testing  *******************************
     # ********************************************************************
 
+    # Dataset
+    data_builder.build_for('test', max_count=5)
+    test_dataset = data_builder.get_dataset()
 
+    # Loader
+    test_loader = DataLoader(test_dataset, 
+        batch_size=1,
+        collate_fn=partial(collate_fn, vocabulary.token_id_dic),
+        pin_memory=False,
+        num_workers=num_workers
+    )
 
+    # Testing
+    gen = LatexGenerator(model, vocabulary)
+    for imgs, tgt4training, tgt4loss_batch in tqdm()
+        try:
+            reference = gen._idx2formulas(tgt4loss_batch)
+            results = gen(imgs)
+        except RuntimeError:
+            break
+
+        
 
 
 if __name__ == '__main__':

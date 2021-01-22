@@ -5,7 +5,6 @@ class LatexGenerator(object):
     """
 
     """
-
     def __init__(self, model, vocabulary, beam_size=5, max_len=64, use_cuda=False):
         """
         """
