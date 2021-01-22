@@ -3,6 +3,7 @@ import random
 import statistics
 from functools import partial
 import time
+import tqdm
 
 # TORCH
 from torch.utils.data import DataLoader
@@ -69,7 +70,7 @@ def run():
     sample_method = "teacher_forcing" #default ["exp", "inv_sigmoid")
 
     # Dataloaders
-    batch_size = 10
+    batch_size = 100
     train_loader = DataLoader (
         train_dataset,
         batch_size=batch_size,
@@ -105,6 +106,7 @@ def run():
     
     # For profiling
     logger = TrainingLogger(print_freq=10)
+
     for epoch in range(epochs):
 
         step_losses = []
@@ -195,7 +197,7 @@ def run():
 
     # Testing
     gen = LatexGenerator(model, vocabulary)
-    for imgs, tgt4training, tgt4loss_batch in tqdm()
+    for imgs, tgt4training, tgt4loss_batch in tqdm(test_loader):
         try:
             reference = gen._idx2formulas(tgt4loss_batch)
             results = gen(imgs)

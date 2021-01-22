@@ -135,3 +135,6 @@ src/data/sets/raw/images/*.png
 
 # Processed data
 src/data/sets/processed/*.pkl
+
+# VSCode
+.vscode/
