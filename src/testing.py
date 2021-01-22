@@ -45,7 +45,7 @@ def run():
     # 2. Create Loaders
     train_loader = DataLoader (
         train_dataset,
-        batch_size=20,
+        batch_size=50,
         #TODO how collate works?
         # https://discuss.pytorch.org/t/how-to-create-a-dataloader-with-variable-size-input/8278
         collate_fn= partial(collate_fn, vocabulary.token_id_dic),
@@ -56,7 +56,7 @@ def run():
 
     valid_loader = DataLoader(
         valid_dataset,
-        batch_size=16
+        batch_size=40
     )
 
     # 2. Creates model and optimizer?
@@ -75,13 +75,15 @@ def run():
         min_lr=3e-5) # default
 
 
-    # 3. Train loop
+    # ********************************************************************
+    # **********************  Train loop *********************************
+    # ********************************************************************
+
     #input ("Press Enter to continue with the training")
     
     # Frequencia to print loss
     print_freq = 20 #each 20 steps
 
-    #device = 
     loss_fn = nn.MSELoss(reduction='mean')
     epochs = 2
 
