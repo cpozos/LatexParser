@@ -1,6 +1,7 @@
 import torch
+from torch.functional import F
 
-from data import Vocabulary
+from data.vocabulary import Vocabulary
 
 def collate_fn(token2id, batch):
     # filter the pictures that have different weight or height
@@ -52,7 +53,7 @@ def cal_loss(logits, targets):
                 [B, MAX_LEN]
     """
     ones_like = torch.ones_like(targets)
-    padding = ones_like * Vocabulary.PAD_TOKEN
+    padding = ones_like * Vocabulary.PAD_TOKEN_ID
     mask = (targets != padding)
 
     targets = targets.masked_select(mask)

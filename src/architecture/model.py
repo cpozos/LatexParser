@@ -68,7 +68,7 @@ class Model(nn.Module):
         encoded_imgs = self.cnn_encoder(imgs) #[B, 512, H', W']
         encoded_imgs = encoded_imgs.permute(0,2,3,1) #[B, H', W', 512]
         Batch, Height, Width, _ = encoded_imgs.shape
-        encoded_imgs = encoded_imgs.contigous().view(Batch, Height * Width, -1) #[B, H*W, 512]
+        encoded_imgs = encoded_imgs.contiguous().view(Batch, Height * Width, -1) #[B, H*W, 512]
 
         # Decoder's states
         dec_states, o_t = self.init_decoder(encoded_imgs)
