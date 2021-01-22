@@ -27,6 +27,8 @@ class LatexGenerator(object):
         return results
 
     def _greedy_decoding(self, imgs):
+        """
+        """
         imgs = imgs.to(self.device)
         self.model.eval()
 
@@ -51,12 +53,15 @@ class LatexGenerator(object):
         return results
 
     def _batch_beam_search(self, imgs):
+        """
+        """
         pass
 
 
 
     def _idx2formulas(self, formulas_idx):
-        """convert formula id matrix to formulas list"""
+        """convert formula id matrix to formulas list
+        """
         results = []
         for id_ in formulas_idx:
             id_list = id_.tolist()
@@ -71,6 +76,10 @@ class LatexGenerator(object):
 
 
 class BeamSearch(object)
-
+    """
+    """
+    
     def  __init__(self):
+        """
+        """
         pass
