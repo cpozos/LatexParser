@@ -76,9 +76,8 @@ def run():
         # Training
         batch_losses = []
 
-        # 
-        for i, data in enumerate(data_loader):
-            imgs_batch, tgt4training_batch, tgt4loss_batch  = data
+        i = 0
+        for imgs_batch, tgt4training_batch, tgt4loss_batch in data_loader:
             model.train()
 
             # Make prediction
@@ -98,12 +97,14 @@ def run():
             batch_losses.append(loss.item())
 
             print(f"Train batch step {i}. Batch loss {loss.item()}")
+            i += 1
         
         training_loss = np.mean(batch_losses)
         training_losses.append(training_loss)
 
         # Evaluation
         batch_losses = []
+        i = 0
         with torch.no_grad(): # This disable any gradient calculation (better performance)
             for imgs_batch, formulas_batch in valid_loader:
                 mode.eval()
@@ -113,7 +114,8 @@ def run():
                 batch_loss = loss_fn(formulas_batch, pred)
                 batch_losses.append(batch_loss.item()) 
 
-                print(f"Validate batch step. Validate loss {batch_loss.item()}")
+                print(f"Validate batch step {i}. Validate loss {batch_loss.item()}")
+                i += 1
 
         valid_loss = np.mean(batch_losses)
         valid_losses.append(valid_loss)
