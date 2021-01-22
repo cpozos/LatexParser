@@ -63,12 +63,8 @@ class Model(nn.Module):
         return:
         logits: [B, MAX_LEN, VOCAB_SIZE]
         """
-        
         # Encoding
-        encoded_imgs = self.cnn_encoder(imgs) #[B, 512, H', W']
-        encoded_imgs = encoded_imgs.permute(0,2,3,1) #[B, H', W', 512]
-        Batch, Height, Width, _ = encoded_imgs.shape
-        encoded_imgs = encoded_imgs.contiguous().view(Batch, Height * Width, -1) #[B, H*W, 512]
+        encoded_imgs = self.encode(imgs)
 
         # Decoder's states
         dec_states, o_t = self.init_decoder(encoded_imgs)
@@ -88,6 +84,18 @@ class Model(nn.Module):
         logits = torch.stack(logits, dim=1) #[B, MAX_LEN, out_size]
         return logits
 
+    def encode(self, imgs):
+        """
+        Applies the CNN layer to encode the images
+        args:
+            imgs: tensors of dimension [B,3,H,W]
+        """
+        encoded_imgs = self.cnn_encoder(imgs)  #[B, 512, H', W']
+        encoded_imgs = encoded_imgs.permute(0, 2, 3, 1)  #[B, H', W', 512]
+        B, H, W, _ = encoded_imgs.shape
+        encoded_imgs = encoded_imgs.contiguous().view(B, H*W, -1)
+        return encoded_imgs
+
     def init_decoder(self, enc_out):
         """args:
             enc_out: the output of row encoder [B, H*W, C]
@@ -100,8 +108,7 @@ class Model(nn.Module):
         h = torch.tanh(self.init_wh(mean_enc_out))
         c = torch.tanh(self.init_wc(mean_enc_out))
         init_o = torch.tanh(self.init_wo(mean_enc_out))
-        return (h, c), init_o
-            
+        return (h, c), init_o    
 
     def step_decoding(self, dec_states, o_t, enc_out, tgt):
         """
@@ -144,5 +151,3 @@ class Model(nn.Module):
         context = torch.bmm(alpha.unsqueeze(1), enc_out)
         context = context.squeeze(1)
         return context, alpha
-
-
