@@ -96,7 +96,7 @@ def run():
             # Add loss
             batch_losses.append(loss.item())
 
-            print(f"Time train step batch ( {time.time()-start} )")
+            print(f"Train batch step. Batch loss {loss.item()}")
         
         training_loss = np.mean(batch_losses)
         training_losses.append(training_loss)
@@ -112,7 +112,7 @@ def run():
                 batch_loss = loss_fn(formulas_batch, pred)
                 batch_losses.append(batch_loss.item()) 
 
-                print(f"Time validate batch step ( {time.time()-start} )")
+                print(f"Validate batch step. Validate loss {batch_loss.item()}")
 
         valid_loss = np.mean(batch_losses)
         valid_losses.append(valid_loss)
