@@ -37,7 +37,6 @@ def formulas2tensor(formulas, token2id):
 def add_start_token(formulas):
     return [['<s>']+formula for formula in formulas]
 
-
 def add_end_token(formulas):
     return [formula+['</s>'] for formula in formulas]
 
@@ -49,15 +48,15 @@ def cal_loss(logits, targets):
         targets: target formulas
                 [B, MAX_LEN]
     """
+    
     # targets [1 29 34 1]
     padding = torch.ones_like(targets) * Vocabulary.PAD_TOKEN_ID # [1 1 1 1]
     mask = (targets != padding)  # [False True True False]
 
     targets = targets.masked_select(mask)
 
-    logits = logits.masked_select(
-        mask.unsqueeze(2).expand(-1, -1, logits.size(2))
-    ).contiguous().view(-1, logits.size(2))
+    mask_2 = mask.unsqueeze(2).expand(-1, -1, logits.size(2))
+    logits = logits.masked_select(mask_2).contiguous().view(-1, logits.size(2))
     logits = torch.log(logits)
 
     assert logits.size(0) == targets.size(0)

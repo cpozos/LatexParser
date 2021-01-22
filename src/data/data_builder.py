@@ -72,7 +72,7 @@ class DataBuilder(object):
             # Writes processed vocabulary
             self._vocabulary.save()
 
-    def build_for(self, kind, force = False):
+    def build_for(self, kind, force=False, max_count=None):
         # Validates processing
         assert kind in DataBuilder.KINDS
         
@@ -81,7 +81,7 @@ class DataBuilder(object):
         path = path.format(kind)
 
         # Assigns the data set 
-        self._dataset = ImageLatexDataset(kind, force)
+        self._dataset = ImageLatexDataset(kind, max_count=max_count, force=force)
 
         #TODO check if next logic could be inside ImageLatexDataset
         if not self._dataset.is_processed_and_saved():

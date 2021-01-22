@@ -14,11 +14,12 @@ from utilities.system import get_system_path
 class ImageLatexDataset(Dataset):
     OUTPUT_DIR = "src\\data\\sets\\processed"
 
-    def __init__(self, output_filename, force = False, max_len = 300):
+    def __init__(self, output_filename, max_count=None, force=False, max_len=300):
         # Fix paths
         ImageLatexDataset.OUTPUT_DIR = get_system_path(ImageLatexDataset.OUTPUT_DIR)
 
-        self.out_data_path = join(ImageLatexDataset.OUTPUT_DIR, output_filename + '.pkl')     
+        self.out_data_path = join(ImageLatexDataset.OUTPUT_DIR, output_filename + '.pkl')  
+        self._max_count = max_count   
         self._max_len = max_len
         self._pairs_sorted = False
         self._transform = transforms.ToTensor()
@@ -88,33 +89,7 @@ class ImageLatexDataset(Dataset):
         return (img_tensor, formula)
 
     def __len__(self):
-        return len(self._pairs)
-
-    # def collate_fn(sign2id, batch):
-    #    # filter the pictures that have different weight or height
-    #    size = batch[0][0].size()
-    #    batch = [img_formula for img_formula in batch
-    #            if img_formula[0].size() == size]
-    #    # sort by the length of formula
-    #    batch.sort(key=lambda img_formula: len(img_formula[1].split()),
-    #            reverse=True)
-
-    #    imgs, formulas = zip(*batch)
-    #    formulas = [formula.split() for formula in formulas]
-    #    # targets for training , begin with START_TOKEN
-    #    tgt4training = formulas2tensor(add_start_token(formulas), sign2id)
-    #    # targets for calculating loss , end with END_TOKEN
-    #    tgt4cal_loss = formulas2tensor(add_end_token(formulas), sign2id)
-    #    imgs = torch.stack(imgs, dim=0)
-    #    return imgs, tgt4training, tgt4cal_loss
-
-    #def formulas2tensor(formulas, sign2id):
-    #    """convert formula to tensor"""
-
-    #    batch_size = len(formulas)
-    #    max_len = len(formulas[0])
-    #    tensors = torch.ones(batch_size, max_len, dtype=torch.long) * PAD_TOKEN
-    #    for i, formula in enumerate(formulas):
-    #        for j, sign in enumerate(formula):
-    #            tensors[i][j] = sign2id.get(sign, UNK_TOKEN)
-    #    return tensors
+        if self._max_count is None:
+            return len (self._pairs)
+        else:
+            return self._max_count 
