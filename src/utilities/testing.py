@@ -87,7 +87,7 @@ class LatexGenerator(object):
             id_list = id_.tolist()
             result = []
             for sign_id in id_list:
-                if sign_id != END_TOKEN:
+                if sign_id != Vocabulary.END_TOKEN_ID:
                     result.append(self._id2sign[sign_id])
                 else:
                     break

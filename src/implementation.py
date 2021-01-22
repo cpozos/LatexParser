@@ -197,7 +197,7 @@ def run():
 
     # Testing
     gen = LatexGenerator(model, vocabulary)
-    for imgs, tgt4training, tgt4loss_batch in tqdm(test_loader):
+    for imgs, tgt4training, tgt4loss_batch in test_loader:
         try:
             reference = gen._idx2formulas(tgt4loss_batch)
             results = gen(imgs)
