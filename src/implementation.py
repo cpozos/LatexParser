@@ -22,33 +22,54 @@ from utilities.persistance import *
 from utilities.logger import *
 
 def run():
-    #BATCH 
-    batch_size = 1
-    num_workers = 2 if batch_size > 10 else 1 
-
     # GPU
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
-    # 0. Preprocess the raw data (only one time) 
+    # ********************************************************************
+    # **********************  Get data  **********************************
+    # ********************************************************************
     data_builder = DataBuilder()
-    vocabulary = data_builder.get_vocabulary()
-    dic = vocabulary.token_id_dic
-    dic = vocabulary.id_token_dic
 
-    # 1. Get processed data
+    vocabulary = data_builder.get_vocabulary()
+
     data_builder.build_for('train', max_count=50)
     train_dataset = data_builder.get_dataset()
+
     data_builder.build_for('validation', max_count=10)
     valid_dataset = data_builder.get_dataset()
 
-    # 1.1 Visualize processed data
+    # Visualize processed data
     randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in range(0,4)]
     #for t in randoms:
     #    print(t.shape)
     #    show_tensor_as_image(t)
 
+    
+    # ********************************************************************
+    # **********************  Architecture  ******************************
+    # ********************************************************************
 
-    # 2. Create Loaders
+    model_config = ModelConfig(out_size = len(vocabulary))
+    model = Model(model_config)
+
+    # ********************************************************************
+    # **********************  Training  *********************************
+    # ********************************************************************
+
+    #input ("Press Enter to continue with the training")
+    
+    # Hyper parameters for training 
+    init_epoch = 1
+    epochs = 1
+    num_workers = 3 if epochs > 5 else 1 
+    learning_rate = 0.01
+
+    # For epsilon calculation
+    decay_k = 1 #default
+    sample_method = "teacher_forcing" #default ["exp", "inv_sigmoid")
+
+    # Dataloaders
+    batch_size = 10
     train_loader = DataLoader (
         train_dataset,
         batch_size=batch_size,
@@ -66,13 +87,8 @@ def run():
         collate_fn=partial(collate_fn, vocabulary.token_id_dic)
     )
 
-    # 2. Creates model and optimizer?
-    learning_rate = 0.01
-    model_config = ModelConfig(out_size = len(vocabulary))
-    model = Model(model_config)
+    # Optimizer and scheduler
     optimizer = optim.Adam(model.parameters(), lr = learning_rate)
-
-    # Creates the scheduler
     lr_scheduler = ReduceLROnPlateau(
         optimizer,
         "min",
@@ -81,27 +97,14 @@ def run():
         verbose=True,
         min_lr=3e-5) # default
 
-
-    # ********************************************************************
-    # **********************  Training  *********************************
-    # ********************************************************************
-
-    #input ("Press Enter to continue with the training")
-    
-    # For epsilon calculation
-    init_epoch = 1
-    total_step = (init_epoch-1)*len(train_loader)
-    decay_k = 1 #default
-    sample_method = "teacher_forcing" #default (exp, inv_sigmoid)
-
-    # For losses
+    # Variables to save results
+    total_step = 0
     training_losses = []
     valid_losses = []
     best_valid_loss = 1e18
     
     # For profiling
     logger = TrainingLogger(print_freq=10)
-    epochs = 1
     for epoch in range(epochs):
 
         step_losses = []
@@ -198,8 +201,6 @@ def run():
             results = gen(imgs)
         except RuntimeError:
             break
-
-        
 
 
 if __name__ == '__main__':
