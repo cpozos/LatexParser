@@ -212,7 +212,7 @@ def run():
     result_file = join_paths(get_current_path(), "resFile.")
     imgs, tgt4training, tgt4loss_batch = next(iter(test_loader))
     ref = latex_generator.idx2formulas(tgt4loss_batch)[0]
-    logit = latex_generator(imgs)
+    logit = latex_generator(imgs)[0]
 
     # Testing
     for imgs, tgt4training, tgt4loss_batch in test_loader:
