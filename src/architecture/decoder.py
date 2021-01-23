@@ -35,7 +35,7 @@ class Decoder(object):
         self.W_out = nn.Linear(hidden_size, out_size, bias=False)
         self.dropout = nn.Dropout(p=dropout)
 
-    def init_decode(self, enc_out):
+    def init(self, enc_out):
         """
         Returns the initial values for h0, c0 and o0 to be used in Attention mechanism
 

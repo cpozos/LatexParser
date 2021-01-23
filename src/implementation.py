@@ -203,6 +203,8 @@ def run():
         except RuntimeError:
             break
 
+    for i in range(len(results)):
+        print(f"{reference[i]} {results[i]}")
 
 if __name__ == '__main__':
     run()

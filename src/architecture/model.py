@@ -51,7 +51,7 @@ class Model(nn.Module):
         encoded_imgs = self.cnn_encoder.encode(imgs)
 
         # Decoder's states
-        dec_states, o_t = self.rnn_decoder.init_decode(encoded_imgs)
+        dec_states, o_t = self.rnn_decoder.init(encoded_imgs)
 
         # ??
         logits = []

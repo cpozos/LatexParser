@@ -5,7 +5,7 @@ class LatexGenerator(object):
     """
 
     """
-    def __init__(self, model, vocabulary, beam_size=5, max_len=64, use_cuda=False):
+    def __init__(self, model, vocabulary, beam_size=1, max_len=64, use_cuda=False):
         """
         """
         self.device = torch.device("cuda" if use_cuda else "cpu")
@@ -35,8 +35,8 @@ class LatexGenerator(object):
         imgs = imgs.to(self.device)
         self.model.eval()
 
-        enc_outs = self.model.encode(imgs)
-        dec_states, O_t = self.model.init_decoder(enc_outs)
+        enc_outs = self.model.cnn_encoder.encode(imgs)
+        dec_states, O_t = self.model.rnn_decoder.init(enc_outs)
 
         batch_size = imgs.size(0)
         # storing decoding results
@@ -47,8 +47,8 @@ class LatexGenerator(object):
             batch_size, 1, device=self.device).long() * Vocabulary.START_TOKEN_ID
         with torch.no_grad():
             for t in range(self.max_len):
-                dec_states, O_t, logit = self.model.step_decoding(
-                    dec_states, O_t, enc_outs, tgt)
+                dec_states, O_t, logit = self.model.rnn_decoder.step_decoding(
+                    dec_states, O_t, enc_outs, tgt, self.model.beta)
 
                 tgt = torch.argmax(logit, dim=1, keepdim=True)
                 formulas_idx[:, t:t + 1] = tgt
@@ -59,10 +59,10 @@ class LatexGenerator(object):
         """
         """
         self.model.eval()
-        imgs = imgs.to(self.device)
-        enc_outs = self.model.encode(imgs)  # [B, H*W, OUT_C]
+        #imgs = imgs.to(self.device) #MODIF
+        enc_outs = self.model.cnn_encoder.encode(imgs)  # [B, H*W, OUT_C]
         # enc_outs = enc_outs.expand(self.beam_size, -1, -1)
-        dec_states, O_t = self.model.init_decoder(enc_outs)
+        dec_states, O_t = self.model.rnn_decoder.init(enc_outs)
 
         batch_size = imgs.size(0)
         start_predictions = torch.ones(
@@ -101,8 +101,8 @@ class LatexGenerator(object):
 
         last_predictions = last_predictions.unsqueeze(1)
         with torch.no_grad():
-            dec_states, O_t, logit = self.model.step_decoding(
-                dec_states, O_t, enc_outs, last_predictions)
+            dec_states, O_t, logit = self.model.rnn_decoder.step_decoding(
+                dec_states, O_t, enc_outs, last_predictions, self.model.beta)
 
         # update state
         state['h_t'] = dec_states[0]
