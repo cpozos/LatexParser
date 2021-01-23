@@ -20,6 +20,8 @@
 
 [8] [Image To Latex with DenseNet Encoder and Joint Attention](https://www.sciencedirect.com/science/article/pii/S1877050919302686)
 
+[9] https://github.com/ArminKaramzade/im2latex
+
 ## CNN
 
 [1] [CNN Standford class](https://cs231n.github.io/)
