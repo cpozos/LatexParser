@@ -18,10 +18,11 @@ class LatexGenerator(object):
         self._beam_search = BeamSearch(Vocabulary.END_TOKEN_ID, max_len, beam_size)
 
     def __call__(self, imgs):
-        """args:
+        """
+        args:
             imgs: images need to be decoded
             beam_size: if equal to 1, use greedy decoding
-           returns:
+        returns:
             formulas list of batch_size length
         """
         if self.beam_size == 1:
@@ -56,6 +57,23 @@ class LatexGenerator(object):
         results = self._idx2formulas(formulas_idx)
         return results
 
+    def idx2formulas(self, formulas_idx):
+        """
+            Convert formula id matrix to formulas list
+        """
+        results = []
+        for id_ in formulas_idx:
+            id_list = id_.tolist()
+            result = []
+            for sign_id in id_list:
+                if sign_id != Vocabulary.END_TOKEN_ID:
+                    result.append(self._id2sign[sign_id])
+                else:
+                    break
+            results.append(" ".join(result))
+        return results
+
+
     def _batch_beam_search(self, imgs):
         """
         """
@@ -80,21 +98,6 @@ class LatexGenerator(object):
         all_top_predictions = self._idx2formulas(all_top_predictions)
         return all_top_predictions
 
-    def _idx2formulas(self, formulas_idx):
-        """convert formula id matrix to formulas list
-        """
-        results = []
-        for id_ in formulas_idx:
-            id_list = id_.tolist()
-            result = []
-            for sign_id in id_list:
-                if sign_id != Vocabulary.END_TOKEN_ID:
-                    result.append(self._id2sign[sign_id])
-                else:
-                    break
-            results.append(" ".join(result))
-        return results
-
     def _take_step(self, last_predictions, state):
         dec_states = (state['h_t'], state['c_t'])
         O_t = state['o_t']
@@ -110,7 +113,6 @@ class LatexGenerator(object):
         state['c_t'] = dec_states[1]
         state['o_t'] = O_t
         return (torch.log(logit), state)
-
 
 """
 Borrow from https://github.com/allenai/allennlp/blob/master/allennlp/nn/beam_search.py

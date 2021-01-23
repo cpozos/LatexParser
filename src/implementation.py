@@ -181,7 +181,7 @@ def run():
     # **********************  Testing  *******************************
     # ********************************************************************
 
-    gen = LatexGenerator(model, vocabulary)
+    latex_generator = LatexGenerator(model, vocabulary)
 
     # Loader
     test_loader = DataLoader(test_dataset, 
@@ -193,14 +193,14 @@ def run():
     
     result_file = join_paths(get_current_path(), "resFile.")
     imgs, tgt4training, tgt4loss_batch = next(iter(test_loader))
-    ref = gen._idx2formulas(tgt4loss_batch)
-    logit = gen(imgs)
+    ref = latex_generator._idx2formulas(tgt4loss_batch)
+    logit = latex_generator(imgs)
 
     # Testing
     for imgs, tgt4training, tgt4loss_batch in test_loader:
         try:
-            reference = gen._idx2formulas(tgt4loss_batch)
-            results = gen(imgs)
+            reference = latex_generator.idx2formulas(tgt4loss_batch)
+            results = latex_generator(imgs)
         except RuntimeError:
             break
 
