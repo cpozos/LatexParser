@@ -17,12 +17,14 @@ class ImageLatexDataset(Dataset):
     def __init__(self, output_filename, max_count=None, force=False, max_len=300):
         # Fix paths
         ImageLatexDataset.OUTPUT_DIR = get_system_path(ImageLatexDataset.OUTPUT_DIR)
+        self.max_form_len = 0
 
         self.out_data_path = join(ImageLatexDataset.OUTPUT_DIR, output_filename + '.pkl')  
         self._max_count = max_count   
         self._max_len = max_len
         self._pairs_sorted = False
         self._transform = transforms.ToTensor()
+
         if force:
             self.delete()
         
@@ -36,10 +38,12 @@ class ImageLatexDataset(Dataset):
         self._pairs = []
         if self.is_processed_and_saved():
             self._pairs = torch.load(self.out_data_path)
+            self._set_max_formulas_len()
             #for i, (img, formula) in enumerate(self._pairs):
                 ##TODO why self._max_len?
                 ## pair = (img, " ".join(formula.split()[:self._max_len]))
                 # pair = (img, " ".join(formula.split()))
+            
 
     def dispose(self):
         self._pairs = []
@@ -57,6 +61,7 @@ class ImageLatexDataset(Dataset):
         #TODO not saving for testing
         #return
         torch.save(self._pairs, self.out_data_path)
+        self._set_max_formulas_len()
         
     def delete(self):
         """
@@ -83,6 +88,9 @@ class ImageLatexDataset(Dataset):
             self._pairs.sort(key = lambda pair : tuple(pair[0].size()) )
             self._pairs_sorted = True
 
+    def _set_max_formulas_len(self):
+        self.max_form_len = max([len(pair[1]) for pair in self._pairs])
+
     def __getitem__(self, index):
         img_path, formula = self._pairs[index]
         img_tensor = self._transform(Image.open(img_path))
@@ -93,3 +101,7 @@ class ImageLatexDataset(Dataset):
             return len (self._pairs)
         else:
             return self._max_count 
+
+    def print(self):
+        print(f"Formulas: {self.__len__()}")
+        print(f"Max formula length: {self.max_form_len}")

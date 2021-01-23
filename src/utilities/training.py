@@ -49,8 +49,8 @@ def cal_loss(logits, targets):
                 [B, MAX_LEN]
     """
 
-    # targets [1 29 34 1]
-    padding = torch.ones_like(targets) * Vocabulary.PAD_TOKEN_ID # [1 1 1 1]
+    # targets [B, MAX_LEN]
+    padding = torch.ones_like(targets) * Vocabulary.PAD_TOKEN_ID # [1 1 1 1 ...]
     mask = (targets != padding)  # [False True True False]
 
     targets = targets.masked_select(mask)

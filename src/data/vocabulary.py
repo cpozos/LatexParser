@@ -19,7 +19,7 @@ class Vocabulary(object):
         Vocabulary.RAW_DATA_PATH = get_system_path(Vocabulary.RAW_DATA_PATH)
         Vocabulary.FILE_PATH = get_system_path(Vocabulary.FILE_PATH)
         Vocabulary.PROCESSED_PATH = get_system_path(Vocabulary.PROCESSED_PATH)
-
+        self.max_token_len = 0
         self.load()
         
     def _initialize(self, use_txt = False):
@@ -36,17 +36,11 @@ class Vocabulary(object):
         if use_txt :
             file_text = open(Vocabulary.FILE_PATH).readlines()
             for i,x in enumerate(file_text):
-                
                 # Updates tokens dictionaries
                 token = x.split('\n')[0]
-                self.add_item(token)           
+                self.add_item(token) 
         
         self.id_token_dic = dict((id, token) for token, id in self.token_id_dic.items())
-
-
-
-    def __len__(self):
-        return len(self.token_id_dic)
 
     def add_token(self, token):
         if token not in self.token_id_dic:
@@ -60,9 +54,10 @@ class Vocabulary(object):
                 data_saved = pkl.load(f)
                 self.token_id_dic = data_saved[0]
                 self.id_token_dic = data_saved[1]
-
         else:
             self._initialize()
+
+        self.max_token_len = max([len(form) for form in self.token_id_dic.keys()])
 
     def dispose(self):
         self.id_token_dic = {}
@@ -76,6 +71,7 @@ class Vocabulary(object):
             with open(Vocabulary.PROCESSED_PATH, 'wb') as w:
                 pkl.dump([self.token_id_dic, self.id_token_dic], w)
         except Exception:
+            self.max_token_len = 0
             return False
         return True
 
@@ -89,9 +85,10 @@ class Vocabulary(object):
         except IOError:
             return False
         return True
+        
+    def __len__(self):
+        return len(self.token_id_dic)
 
-    def get_token(self, index):
-        return self.id_token_dic[index]
-
-    def get_index(self, token):
-        return self.token_id_dic[token]
+    def print_info(self):
+        print(f"Tokens: {len(self.token_id_dic)}")
+        print(f"Max token len: {self.max_token_len}")

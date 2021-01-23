@@ -12,7 +12,7 @@ INIT = 1e-2
 
 class Model(nn.Module):
 
-    def __init__(self, out_size, enc_out_dim=512, emb_size=80, dec_rnn_h=512, dropout=0.):
+    def __init__(self, out_size, enc_out_dim=512, emb_size=0, dec_rnn_h=512, dropout=0.):
         super(Model, self).__init__()
 
         # Encoder
@@ -53,7 +53,7 @@ class Model(nn.Module):
         # Decoder's states
         dec_states, o_t = self.rnn_decoder.init(encoded_imgs)
 
-        # ??
+        # Attention
         logits = []
         for t in range(formulas.size(1)):
             tgt = formulas[:,t:t+1]

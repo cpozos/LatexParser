@@ -72,7 +72,7 @@ class DataBuilder(object):
             # Writes processed vocabulary
             self._vocabulary.save()
 
-    def build_for(self, kind, force=False, max_count=None):
+    def get_dataset_for(self, kind, force=False, max_count=None):
         # Validates processing
         assert kind in DataBuilder.KINDS
         
@@ -81,17 +81,19 @@ class DataBuilder(object):
         path = path.format(kind)
 
         # Assigns the data set 
-        self._dataset = ImageLatexDataset(kind, max_count=max_count, force=force)
+        dataset = ImageLatexDataset(kind, max_count=max_count, force=force)
 
         #TODO check if next logic could be inside ImageLatexDataset
-        if not self._dataset.is_processed_and_saved():
+        if not dataset.is_processed_and_saved():
 
             # Sets the path of the training data to iterate
             self._image_latex_data_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format('train')
             for pair in self:
-                formula = self._latex_formulas[pair[1]]
-                self._dataset.add_item(pair[0], formula)              
-            self._dataset.save()
+                formula_id = pair[1]
+                formula = self._latex_formulas[formula_id]
+                dataset.add_item(pair[0], formula)           
+            dataset.save()
+        return dataset
 
     # VOCABULARY
     def get_vocabulary(self):
@@ -103,38 +105,3 @@ class DataBuilder(object):
 
     def get_formula(self, formula_id):
         return self._latex_formulas[formula_id]
-    
-    # DATA SETS
-    def get_dataset(self):
-        return self._dataset
-
-
-    #TODO delete it. Deprecated
-    #def map_images_latex_dictionary(self, kind, max = 100):
-
-        ## TODO : a lot of memory use, remove max = 100
-        ## Reads the Image - LatexFormula dictionary
-        #pairs = []
-        #transform = transforms.ToTensor()
-        #image_latex_dic_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format(kind)
-        #i = 0
-        #with open(image_latex_dic_path, 'r') as file:
-        #    for line in file:
-
-        #        if (i > max - 1) :
-        #             break
-
-        #        img_name, formula_id = line.strip('\n').split()
-        #        img_path = join(DataBuilder.IMAGES_DIR, img_name)
-        #        img = Image.open(img_path)
-        #        img_tensor = transform(img)
-        #        pair = (img_tensor, formula_id)
-        #        pairs.append(pair)
-        #        i = i + 1
-        #    
-        ## TODO: Check why is sorting
-        #pairs.sort(key = lambda pair : tuple(pair[0].size()) )
-        #return pairs
-
-        ## TODO Y data
-        #return []

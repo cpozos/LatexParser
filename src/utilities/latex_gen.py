@@ -5,7 +5,8 @@ class LatexGenerator(object):
     """
 
     """
-    def __init__(self, model, vocabulary, beam_size=1, max_len=64, use_cuda=False):
+    #max_len=64
+    def __init__(self, model, vocabulary, beam_size=1, max_len=200, use_cuda=False):
         """
         """
         self.device = torch.device("cuda" if use_cuda else "cpu")

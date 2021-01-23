@@ -23,8 +23,9 @@ from utilities.persistance import *
 from utilities.logger import *
 
 def run():
-    # GPU
+    # HARDWARE
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    num_workers = 1
 
     # ********************************************************************
     # **********************  Get data  **********************************
@@ -33,14 +34,13 @@ def run():
 
     vocabulary = data_builder.get_vocabulary()
 
-    data_builder.build_for('train', max_count=50)
-    train_dataset = data_builder.get_dataset()
-
-    data_builder.build_for('validation', max_count=10)
-    valid_dataset = data_builder.get_dataset()
+    force = True
+    train_dataset = data_builder.get_dataset_for('train', max_count=50, force=force)
+    valid_dataset = data_builder.get_dataset_for('validation', max_count=20, force=force)
+    test_dataset = data_builder.get_dataset_for('test', max_count=2, force=force)
 
     # Visualize processed data
-    randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in range(0,4)]
+    #randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in range(0,4)]
     #for t in randoms:
     #    print(t.shape)
     #    show_tensor_as_image(t)
@@ -61,7 +61,6 @@ def run():
     # Hyper parameters for training 
     init_epoch = 1
     epochs = 1
-    num_workers = 3 if epochs > 5 else 1 
     learning_rate = 0.01
 
     # For epsilon calculation
@@ -69,7 +68,7 @@ def run():
     sample_method = "teacher_forcing" #default ["exp", "inv_sigmoid")
 
     # Dataloaders
-    batch_size = 100
+    batch_size = 1
     train_loader = DataLoader (
         train_dataset,
         batch_size=batch_size,
@@ -77,7 +76,7 @@ def run():
         # https://discuss.pytorch.org/t/how-to-create-a-dataloader-with-variable-size-input/8278
         collate_fn=partial(collate_fn, vocabulary.token_id_dic),
         pin_memory=False, # It must be False (no GPU): https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723
-        shuffle=True,
+        #shuffle=True,
         num_workers=num_workers
     )
 
@@ -114,20 +113,20 @@ def run():
         # Training
         model.train()
         for imgs_batch, tgt4training_batch, tgt4loss_batch in train_loader:
+            optimizer.zero_grad()
 
             # Epsilon
             epsilon = cal_epsilon(decay_k, total_step, sample_method)
 
             # Prediction
-            result = model(imgs_batch, tgt4training_batch, epsilon)
+            logits = model(imgs_batch, tgt4training_batch, epsilon)
 
             # Compute Loss
-            step_loss = cal_loss(result, tgt4loss_batch)
+            step_loss = cal_loss(logits, tgt4loss_batch)
+            
+            # Updates
             step_loss.backward()
-
-            # Updates parameters and zeroes gradients
             optimizer.step()
-            optimizer.zero_grad()
 
             # Add loss
             step_losses.append(step_loss.item())
@@ -182,9 +181,7 @@ def run():
     # **********************  Testing  *******************************
     # ********************************************************************
 
-    # Dataset
-    data_builder.build_for('test', max_count=5)
-    test_dataset = data_builder.get_dataset()
+    gen = LatexGenerator(model, vocabulary)
 
     # Loader
     test_loader = DataLoader(test_dataset, 
@@ -193,9 +190,13 @@ def run():
         pin_memory=False,
         num_workers=num_workers
     )
+    
+    result_file = join_paths(get_current_path(), "resFile.")
+    imgs, tgt4training, tgt4loss_batch = next(iter(test_loader))
+    ref = gen._idx2formulas(tgt4loss_batch)
+    logit = gen(imgs)
 
     # Testing
-    gen = LatexGenerator(model, vocabulary)
     for imgs, tgt4training, tgt4loss_batch in test_loader:
         try:
             reference = gen._idx2formulas(tgt4loss_batch)
