@@ -26,7 +26,10 @@ def run():
     # HARDWARE
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     num_workers = 3
+
+
     epochs = 2
+    learning_rate = 0.00001
     num_data_train = 10000
     num_data_val = 2000
     num_data_test = 2
@@ -68,7 +71,6 @@ def run():
 
     # Hyper parameters for training 
     init_epoch = 1
-    learning_rate = 0.00001
 
     # For epsilon calculation
     decay_k = 1 #default
