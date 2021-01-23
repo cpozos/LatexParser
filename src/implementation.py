@@ -33,16 +33,16 @@ def run():
     # ********************************************************************
     
     # data
-    num_data_train = 10
-    num_data_val = 2
-    num_data_test = 1
-    batch_size = 1
+    num_data_train = 10000
+    num_data_val = 2000
+    num_data_test = 100
+    batch_size = 20
     
     # training
-    epochs = 1
-    learning_rate = 3e-4
-    drop_out = 0.
-    clip = 2
+    epochs = 10
+    learning_rate = 3e-4 #default 3e-4
+    drop_out = 0.2 # default 0.2
+    clip = 2 #default 2
 
     # ********************************************************************
     # **********************  Get data  **********************************
