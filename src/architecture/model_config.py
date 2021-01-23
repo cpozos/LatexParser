@@ -2,7 +2,7 @@ class ModelConfig():
     """
     docstring
     """
-    def __init__(self, out_size, emb_size = 80,dec_rnn_h=512, enc_out_dim=512, dropout = 0.):
+    def __init__(self, out_size, emb_size = 0, dec_rnn_h=512, enc_out_dim=512, dropout = 0.):
         """
             out_size : Output size
             emb_size : ??
