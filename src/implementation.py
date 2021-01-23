@@ -27,8 +27,8 @@ def run():
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     num_workers = 3
     epochs = 2
-    num_data_train = 10
-    num_data_val = 2
+    num_data_train = 10000
+    num_data_val = 2000
     num_data_test = 2
 
     # ********************************************************************
@@ -68,7 +68,7 @@ def run():
 
     # Hyper parameters for training 
     init_epoch = 1
-    learning_rate = 0.01
+    learning_rate = 0.00001
 
     # For epsilon calculation
     decay_k = 1 #default
@@ -101,24 +101,24 @@ def run():
         factor=0.5, # float default - Learning rate decay rate
         patience=3, # int default - Learning rate decay patience
         verbose=True,
-        min_lr=3e-5) # default
+        min_lr=3e-5) # default 3e-5
 
     # Variables to save results
-    total_step = 0
     training_losses = []
     valid_losses = []
+    total_step = 0
     best_valid_loss = 1e18
     
     # For profiling
     logger = TrainingLogger(print_freq=10)
 
     for epoch in range(epochs):
-
         step_losses = []
         step = 0
 
         # Training
         model.train()
+        loader_len = len(train_loader)
         for imgs_batch, tgt4training_batch, tgt4loss_batch in train_loader:
             optimizer.zero_grad()
 
@@ -139,13 +139,12 @@ def run():
             step_losses.append(step_loss.item())
 
             # Print results
-            logger.log_train_step(epoch, step, len(train_loader), statistics.mean(step_losses))
+            logger.log_train_step(epoch, step, loader_len, step_loss)
 
             step += 1
             total_step += 1
         
-        training_loss = statistics.mean(step_losses)
-        training_losses.append(training_loss)
+        training_losses.append(statistics.mean(step_losses))
 
         # Validation
         model.eval()
@@ -164,7 +163,7 @@ def run():
                 step_losses.append(step_loss.item()) 
 
                 # Print results
-                logger.log_val_step(epoch, statistics.mean(step_losses))
+                logger.log_val_step(epoch, step_loss)
 
         # Best validation loss
         valid_loss = statistics.mean(step_losses)
