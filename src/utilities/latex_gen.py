@@ -25,11 +25,13 @@ class LatexGenerator(object):
         returns:
             formulas list of batch_size length
         """
-        if self.beam_size == 1:
-            results = self._greedy_decoding(imgs)
-        else:
-            results = self._batch_beam_search(imgs)
-        return results
+        return self._greedy_decoding(imgs)
+
+        #if self.beam_size == 1:
+        #    results = self._greedy_decoding(imgs)
+        #else:
+        #    results = self._batch_beam_search(imgs)
+        #return results
 
     def _greedy_decoding(self, imgs):
         """
@@ -37,7 +39,7 @@ class LatexGenerator(object):
         imgs = imgs.to(self.device)
         self.model.eval()
 
-        enc_outs = self.model.cnn_encoder(imgs)
+        enc_outs = self.model.encode(imgs)
         dec_states, O_t = self.model.init_decoder(enc_outs)
 
         batch_size = imgs.size(0)

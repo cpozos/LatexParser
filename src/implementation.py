@@ -23,16 +23,25 @@ from utilities.persistance import *
 from utilities.logger import *
 
 def run():
-    # HARDWARE
+
+    # Hardware
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     num_workers = 3
 
-    epochs = 2
+    # ********************************************************************
+    # **********************  Hyper parameters  **************************
+    # ********************************************************************
+    
+    # data
+    num_data_train = 10
+    num_data_val = 2
+    num_data_test = 1
+    batch_size = 1
+    
+    # training
+    epochs = 1
     learning_rate = 3e-4
-    num_data_train = 10000
-    num_data_val = 2000
-    num_data_test = 2
-    drop_out = 0.2
+    drop_out = 0.
     clip = 2
 
     # ********************************************************************
@@ -67,7 +76,7 @@ def run():
     )
 
     # ********************************************************************
-    # **********************  Training  *********************************
+    # **********************  Training  **********************************
     # ********************************************************************
 
     # Hyper parameters for training 
@@ -78,7 +87,6 @@ def run():
     sample_method = "inv_sigmoid" #default ["exp", "inv_sigmoid", "teacher_forcing")
 
     # Dataloaders
-    batch_size = 10
     train_loader = DataLoader (
         train_dataset,
         batch_size=batch_size,
@@ -144,7 +152,6 @@ def run():
             step_loss.backward()
             clip_grad_norm_(model.parameters(),clip)
             optimizer.step()
-            
 
             step += 1
             total_step += 1
@@ -168,7 +175,7 @@ def run():
                 step_losses.append(step_loss.item()) 
 
                 # Print results
-                logger.log_val_step(epoch, statistics.mean(statistep_losses))
+                logger.log_val_step(epoch, statistics.mean(step_losses))
 
         # Best validation loss
         valid_loss = statistics.mean(step_losses)
@@ -189,14 +196,14 @@ def run():
     del logger
 
     # ********************************************************************
-    # **********************  Testing  *******************************
+    # **********************  Testing  ***********************************
     # ********************************************************************
 
     latex_generator = LatexGenerator(model, vocabulary)
 
     # Loader
     test_loader = DataLoader(test_dataset, 
-        batch_size=1,
+        batch_size=batch_size,
         collate_fn=partial(collate_fn, vocabulary.token_id_dic),
         pin_memory=False,
         num_workers=num_workers
@@ -205,7 +212,7 @@ def run():
     result_file = join_paths(get_current_path(), "resFile.")
     imgs, tgt4training, tgt4loss_batch = next(iter(test_loader))
     ref = latex_generator.idx2formulas(tgt4loss_batch)[0]
-    logit = latex_generator(imgs)[0]
+    logit = latex_generator(imgs)
 
     # Testing
     for imgs, tgt4training, tgt4loss_batch in test_loader:
