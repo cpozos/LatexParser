@@ -20,7 +20,7 @@
 
 [8] [Image To Latex with DenseNet Encoder and Joint Attention](https://www.sciencedirect.com/science/article/pii/S1877050919302686)
 
-[9] https://github.com/ArminKaramzade/im2latex/blob/8e0a3b4d9747a7fd6ca8588bee9a5ccf69cc9518/src/trainer.py#L8
+[9] https://github.com/ArminKaramzade/im2latex
 
 ## CNN
 
