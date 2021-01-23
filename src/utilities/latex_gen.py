@@ -54,7 +54,7 @@ class LatexGenerator(object):
 
                 tgt = torch.argmax(logit, dim=1, keepdim=True)
                 formulas_idx[:, t:t + 1] = tgt
-        results = self._idx2formulas(formulas_idx)
+        results = self.idx2formulas(formulas_idx)
         return results
 
     def idx2formulas(self, formulas_idx):

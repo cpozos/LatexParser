@@ -16,7 +16,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from architecture import *
 from data import DataBuilder
 from utilities.training import *
-from utilities.testing import *
+from utilities.latex_gen import *
 
 from utilities.tensor import *
 from utilities.persistance import *
@@ -26,6 +26,10 @@ def run():
     # HARDWARE
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     num_workers = 3
+    epochs = 2
+    num_data_train = 10
+    num_data_val = 2
+    num_data_test = 2
 
     # ********************************************************************
     # **********************  Get data  **********************************
@@ -35,9 +39,9 @@ def run():
     vocabulary = data_builder.get_vocabulary()
 
     force = True
-    train_dataset = data_builder.get_dataset_for('train', max_count=50, force=force)
-    valid_dataset = data_builder.get_dataset_for('validation', max_count=20, force=force)
-    test_dataset = data_builder.get_dataset_for('test', max_count=2, force=force)
+    train_dataset = data_builder.get_dataset_for('train', max_count=num_data_train, force=force)
+    valid_dataset = data_builder.get_dataset_for('validation', max_count=num_data_val, force=force)
+    test_dataset = data_builder.get_dataset_for('test', max_count=num_data_test, force=force)
 
     # Visualize processed data
     #randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in range(0,4)]
@@ -64,7 +68,6 @@ def run():
 
     # Hyper parameters for training 
     init_epoch = 1
-    epochs = 1
     learning_rate = 0.01
 
     # For epsilon calculation
@@ -197,8 +200,8 @@ def run():
     
     result_file = join_paths(get_current_path(), "resFile.")
     imgs, tgt4training, tgt4loss_batch = next(iter(test_loader))
-    ref = latex_generator._idx2formulas(tgt4loss_batch)
-    logit = latex_generator(imgs)
+    ref = latex_generator.idx2formulas(tgt4loss_batch)[0]
+    logit = latex_generator(imgs)[0]
 
     # Testing
     for imgs, tgt4training, tgt4loss_batch in test_loader:
