@@ -6,7 +6,6 @@ class TrainingLogger(object):
         print("+++++++++++++++ Training initialized +++++++++++++++")        
         self.start = time.time()
 
-
     def log_train_step(self, epoch, step, train_loader_len, step_losses_mean):
         if step % self.print_freq == 0:
             print(f"[Train] Epoch {epoch} Step {step}/{train_loader_len} Loss {step_losses_mean:.4f}")
@@ -19,3 +18,16 @@ class TrainingLogger(object):
 
     def __del__(self):
         print("+++++++++++++++ Training finished +++++++++++++++")
+
+
+class TestDataLogger(object):
+    def __init__(self, data):
+        self._data = data
+
+    def print(self):
+        for d in self._data:
+            print("===========================================================\n")
+            print(f"{d[0]}\n")
+            print("-----------------------------------------------------------\n")
+            print(f"{d[1]}\n")
+            print("===========================================================\n")

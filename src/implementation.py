@@ -26,16 +26,16 @@ def run():
 
     # Hardware
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
-    num_workers = 3
+    num_workers = 2
 
     # ********************************************************************
     # **********************  Hyper parameters  **************************
     # ********************************************************************
     
     # data
-    num_data_train = 10000
-    num_data_val = 2000
-    num_data_test = 100
+    num_data_train = 50000
+    num_data_val = 10000
+    num_data_test = 1000
     batch_size = 20
     
     # training
@@ -209,21 +209,28 @@ def run():
         num_workers=num_workers
     )
     
-    result_file = join_paths(get_current_path(), "resFile.")
     imgs, tgt4training, tgt4loss_batch = next(iter(test_loader))
     ref = latex_generator.idx2formulas(tgt4loss_batch)[0]
     logit = latex_generator(imgs)[0]
 
     # Testing
+    references = []
+    results = []
     for imgs, tgt4training, tgt4loss_batch in test_loader:
         try:
             reference = latex_generator.idx2formulas(tgt4loss_batch)
-            results = latex_generator(imgs)
+            result = latex_generator(imgs)
+            references.append(reference)
+            results.append(result)
         except RuntimeError:
             break
+    
+    save_test_data(references, results)
 
-    for i in range(len(results)):
-        print(f"{reference[i]} {results[i]}")
+def review_results():
+    data = load_test_data()
+    logger = TestDataLogger(data)
+    logger.print()
 
 if __name__ == '__main__':
     run()
