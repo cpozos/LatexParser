@@ -37,8 +37,8 @@ class LatexGenerator(object):
         imgs = imgs.to(self.device)
         self.model.eval()
 
-        enc_outs = self.model.cnn_encoder.encode(imgs)
-        dec_states, O_t = self.model.rnn_decoder.init(enc_outs)
+        enc_outs = self.model.cnn_encoder(imgs)
+        dec_states, O_t = self.model.init_decoder(enc_outs)
 
         batch_size = imgs.size(0)
         # storing decoding results
@@ -49,7 +49,7 @@ class LatexGenerator(object):
             batch_size, 1, device=self.device).long() * Vocabulary.START_TOKEN_ID
         with torch.no_grad():
             for t in range(self.max_len):
-                dec_states, O_t, logit = self.model.rnn_decoder.decode(
+                dec_states, O_t, logit = self.model.step_decode(
                     dec_states, O_t, enc_outs, tgt, self.model.beta)
 
                 tgt = torch.argmax(logit, dim=1, keepdim=True)

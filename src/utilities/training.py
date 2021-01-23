@@ -1,6 +1,7 @@
 import torch
 from torch.functional import F
 
+import math
 from data.vocabulary import Vocabulary
 
 def collate_fn(token2id, batch):
@@ -58,7 +59,7 @@ def cal_loss(logits, targets):
     logits = logits.masked_select(
         mask.unsqueeze(2).expand(-1, -1, logits.size(2))
         ).contiguous().view(-1, logits.size(2))
-        
+
     logits = torch.log(logits)
 
     assert logits.size(0) == targets.size(0)

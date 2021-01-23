@@ -28,10 +28,12 @@ def run():
     num_workers = 3
 
     epochs = 2
-    learning_rate = 0.00001
+    learning_rate = 3e-4
     num_data_train = 10000
     num_data_val = 2000
     num_data_test = 2
+    drop_out = 0.2
+    clip = 2
 
     # ********************************************************************
     # **********************  Get data  **********************************
@@ -59,9 +61,9 @@ def run():
     model = Model(
         out_size=len(vocabulary),
         enc_out_dim=512,
-        emb_size=8,
+        emb_size=80,
         dec_rnn_h=512,
-        dropout=0.
+        dropout=drop_out
     )
 
     # ********************************************************************
@@ -76,7 +78,7 @@ def run():
     sample_method = "inv_sigmoid" #default ["exp", "inv_sigmoid", "teacher_forcing")
 
     # Dataloaders
-    batch_size = 1
+    batch_size = 10
     train_loader = DataLoader (
         train_dataset,
         batch_size=batch_size,
@@ -124,23 +126,25 @@ def run():
             optimizer.zero_grad()
 
             # Epsilon
-            epsilon = cal_epsilon(decay_k, total_step, sample_method)
+            #epsilon = cal_epsilon(decay_k, total_step, sample_method)
 
             # Prediction
-            logits = model(imgs_batch, tgt4training_batch, epsilon)
+            logits = model(imgs_batch, tgt4training_batch, 1.)
 
             # Compute Loss
             step_loss = cal_loss(logits, tgt4loss_batch)
             
-            # Updates
-            step_loss.backward()
-            optimizer.step()
-
             # Add loss
             step_losses.append(step_loss.item())
 
             # Print results
-            logger.log_train_step(epoch, step, loader_len, step_loss)
+            logger.log_train_step(epoch, step, loader_len, statistics.mean(step_losses))
+
+            # Updates
+            step_loss.backward()
+            clip_grad_norm_(model.parameters(),clip)
+            optimizer.step()
+            
 
             step += 1
             total_step += 1
@@ -154,17 +158,17 @@ def run():
             for imgs_batch, tgt4training, tgt4loss_batch in valid_loader:
 
                 # Epsilon
-                epsilon = cal_epsilon(decay_k, total_step, sample_method)
+                #epsilon = cal_epsilon(decay_k, total_step, sample_method)
 
                 # Prediction
-                pred = model(imgs_batch, tgt4training, epsilon)
+                pred = model(imgs_batch, tgt4training, 1.)
 
                 # Compute loss
                 step_loss = cal_loss(pred, tgt4loss_batch)
                 step_losses.append(step_loss.item()) 
 
                 # Print results
-                logger.log_val_step(epoch, step_loss)
+                logger.log_val_step(epoch, statistics.mean(statistep_losses))
 
         # Best validation loss
         valid_loss = statistics.mean(step_losses)
