@@ -55,8 +55,10 @@ def cal_loss(logits, targets):
 
     targets = targets.masked_select(mask)
 
-    mask_2 = mask.unsqueeze(2).expand(-1, -1, logits.size(2))
-    logits = logits.masked_select(mask_2).contiguous().view(-1, logits.size(2))
+    logits = logits.masked_select(
+        mask.unsqueeze(2).expand(-1, -1, logits.size(2))
+        ).contiguous().view(-1, logits.size(2))
+        
     logits = torch.log(logits)
 
     assert logits.size(0) == targets.size(0)

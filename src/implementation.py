@@ -27,7 +27,6 @@ def run():
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     num_workers = 3
 
-
     epochs = 2
     learning_rate = 0.00001
     num_data_train = 10000
@@ -74,7 +73,7 @@ def run():
 
     # For epsilon calculation
     decay_k = 1 #default
-    sample_method = "teacher_forcing" #default ["exp", "inv_sigmoid", "teacher_forcing")
+    sample_method = "inv_sigmoid" #default ["exp", "inv_sigmoid", "teacher_forcing")
 
     # Dataloaders
     batch_size = 1
