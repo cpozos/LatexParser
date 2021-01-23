@@ -40,6 +40,7 @@ class Model(nn.Module):
 
             # [B, 512, H, W]
         )
+        
 
         # ******************
         # Decoder
