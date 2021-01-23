@@ -53,7 +53,7 @@ class Decoder(object):
         init_o = torch.tanh(self.init_wo(mean_enc_out))
         return (h, c), init_o 
 
-    def step_decoding(self, dec_states, o_t, enc_out, tgt, beta):
+    def decode(self, dec_states, o_t, enc_out, tgt, beta):
         """
         Runing one step decoding
 

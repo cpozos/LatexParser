@@ -25,7 +25,7 @@ from utilities.logger import *
 def run():
     # HARDWARE
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
-    num_workers = 1
+    num_workers = 3
 
     # ********************************************************************
     # **********************  Get data  **********************************
@@ -50,14 +50,18 @@ def run():
     # **********************  Architecture  ******************************
     # ********************************************************************
 
-    model = Model(out_size=len(vocabulary))
+    model = Model(
+        out_size=len(vocabulary),
+        enc_out_dim=512,
+        emb_size=8,
+        dec_rnn_h=512,
+        dropout=0.
+    )
 
     # ********************************************************************
     # **********************  Training  *********************************
     # ********************************************************************
 
-    #input ("Press Enter to continue with the training")
-    
     # Hyper parameters for training 
     init_epoch = 1
     epochs = 1
@@ -65,7 +69,7 @@ def run():
 
     # For epsilon calculation
     decay_k = 1 #default
-    sample_method = "teacher_forcing" #default ["exp", "inv_sigmoid")
+    sample_method = "teacher_forcing" #default ["exp", "inv_sigmoid", "teacher_forcing")
 
     # Dataloaders
     batch_size = 1

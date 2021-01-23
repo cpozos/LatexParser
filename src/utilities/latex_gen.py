@@ -49,7 +49,7 @@ class LatexGenerator(object):
             batch_size, 1, device=self.device).long() * Vocabulary.START_TOKEN_ID
         with torch.no_grad():
             for t in range(self.max_len):
-                dec_states, O_t, logit = self.model.rnn_decoder.step_decoding(
+                dec_states, O_t, logit = self.model.rnn_decoder.decode(
                     dec_states, O_t, enc_outs, tgt, self.model.beta)
 
                 tgt = torch.argmax(logit, dim=1, keepdim=True)

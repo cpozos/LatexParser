@@ -12,7 +12,7 @@ INIT = 1e-2
 
 class Model(nn.Module):
 
-    def __init__(self, out_size, enc_out_dim=512, emb_size=0, dec_rnn_h=512, dropout=0.):
+    def __init__(self, out_size, enc_out_dim=512, emb_size=80, dec_rnn_h=512, dropout=0.):
         super(Model, self).__init__()
 
         # Encoder
@@ -62,7 +62,9 @@ class Model(nn.Module):
                 tgt = torch.argmax(torch.log(logits[-1]), dim=1, keepdim=True)
 
             # ont step decoding
-            dec_states, o_t, logit = self.rnn_decoder.step_decoding(dec_states, o_t, encoded_imgs, tgt, self.beta)
+            dec_states, o_t, logit = self.rnn_decoder.decode(
+                dec_states, o_t, encoded_imgs, tgt, self.beta)
+
             logits.append(logit)
         
         logits = torch.stack(logits, dim=1) #[B, MAX_LEN, out_size]
