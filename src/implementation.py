@@ -125,7 +125,7 @@ def run():
 
     for epoch in range(epochs):
         step_losses = []
-        step = 0
+        step = 1
 
         # Training
         model.train()
@@ -146,7 +146,7 @@ def run():
             step_losses.append(step_loss.item())
 
             # Print results
-            logger.log_train_step(epoch, step, loader_len, statistics.mean(step_losses))
+            logger.log_train_step(epoch+1, epochs, step, loader_len, statistics.mean(step_losses))
 
             # Updates
             step_loss.backward()
@@ -175,23 +175,23 @@ def run():
                 step_losses.append(step_loss.item()) 
 
                 # Print results
-                logger.log_val_step(epoch, statistics.mean(step_losses))
+                logger.log_val_step(epoch+1, epochs, statistics.mean(step_losses))
 
         # Best validation loss
         valid_loss = statistics.mean(step_losses)
         if valid_loss < best_valid_loss: #best valid loss
             best_valid_loss = valid_loss
-            #save_model("best_ckpt", model)
+            save_model("best_ckpt", model)
 
         # Scheduler
         lr_scheduler.step(valid_loss)
         valid_losses.append(valid_loss)
 
-        # Save model checkpoint
-        # save_model("ckpt-{}-{:.4f}".format(epoch,valid_loss), model)
+        # Save model checkpoint ckpt-e{epoch}
+        save_model(f"ckpt-e{epoch+1}-vl{valid_loss:.4f}", model)
 
         # Print results
-        logger.log_epoch(epoch, statistics.mean(training_losses), statistics.mean(valid_losses))
+        logger.log_epoch(epoch+1, statistics.mean(training_losses), statistics.mean(valid_losses))
 
     del logger
 
@@ -225,7 +225,7 @@ def run():
         except RuntimeError:
             break
     
-    save_test_data(references, results)
+    save_test_data(f"res_{epochs}_{batch_size}_{int(num_data_train/1000)}k_{int(num_data_val/1000)}k_{int(num_data_test/1000)}k",references, results)
 
 def review_results():
     data = load_test_data()

@@ -5,9 +5,8 @@ import torch
 import pickle as pkl
 
 def save_model(model_name, model):
-    save_path = join_paths(get_current_path(), model_name+'.pt')
-    print("Saving checkpoint to {}".format(save_path))
-
+    save_path = join_paths(get_current_path(), f"{model_name}.pt")
+    print(f"Saving checkpoint to {save_path}")
     torch.save(model, save_path)
 
     #torch.save({
@@ -19,11 +18,12 @@ def save_model(model_name, model):
     #    'args': self.args
     #}, save_path)
 
-def save_test_data(references, results):
-    with open(join_paths(get_current_path(), "results.pkl"), "wb") as file:
+def save_test_data(file_name,references, results):
+    file_path = join_paths(get_current_path(), f"{file_name}.pkl")
+    with open(file_path, "wb") as file:
             pkl.dump([references, results], file)
 
-def load_test_data():
-    with open(join_paths(get_current_path(), "results.pkl"),"rb") as file:
+def load_test_data(file_path):
+    with open(file_path),"rb") as file:
         data = pkl.load(file)
     return data
