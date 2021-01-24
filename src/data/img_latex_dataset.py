@@ -100,7 +100,7 @@ class ImageLatexDataset(Dataset):
         count = len(self._pairs)
         if self._max_count is not None and self._max_count <= count:
             return self._max_count
-        else 
+        else:
             return count 
 
     def print(self):
