@@ -33,10 +33,10 @@ def run():
     # ********************************************************************
     
     # data
-    num_data_train = 50000
-    num_data_val = 10000
-    num_data_test = 1000
-    batch_size = 20
+    num_data_train = 100000
+    num_data_val = 20000
+    num_data_test = 2000
+    batch_size = 50
     
     # training
     epochs = 10
