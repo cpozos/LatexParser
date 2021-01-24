@@ -11,7 +11,7 @@ from data.img_latex_dataset import ImageLatexDataset
 from utilities.system import get_system_path
 
 class DataBuilder(object):
-    KINDS = ["train", "validation", "test"]
+    KINDS = ["train", "validate", "test"]
     LATEX_FORMULAS_PATH = 'src\\data\\sets\\raw\\im2latex_formulas.norm.lst'
     IMAGE_LATEX_DIC_PATH = "src\\data\\sets\\raw\\im2latex_{}_filter.lst"
     IMAGES_DIR = 'src\\data\\sets\\raw\\images'  
@@ -87,7 +87,7 @@ class DataBuilder(object):
         if not dataset.is_processed_and_saved():
 
             # Sets the path of the training data to iterate
-            self._image_latex_data_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format('train')
+            self._image_latex_data_path = DataBuilder.IMAGE_LATEX_DIC_PATH.format(kind)
             for pair in self:
                 formula_id = pair[1]
                 formula = self._latex_formulas[formula_id]

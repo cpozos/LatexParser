@@ -53,9 +53,16 @@ def run():
 
     force = True
     train_dataset = data_builder.get_dataset_for('train', max_count=num_data_train, force=force)
-    valid_dataset = data_builder.get_dataset_for('validation', max_count=num_data_val, force=force)
+    valid_dataset = data_builder.get_dataset_for('validate', max_count=num_data_val, force=force)
     test_dataset = data_builder.get_dataset_for('test', max_count=num_data_test, force=force)
 
+    num_data_train = len(train_dataset)
+    num_data_val = len(valid_dataset)
+    num_data_test = len(test_dataset)
+    print(num_data_train)
+    print(num_data_val)
+    print(num_data_test)
+    
     # Visualize processed data
     #randoms = [train_dataset[random.randint(0, len(train_dataset))][0] for i in range(0,4)]
     #for t in randoms:

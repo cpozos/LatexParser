@@ -97,10 +97,11 @@ class ImageLatexDataset(Dataset):
         return (img_tensor, formula)
 
     def __len__(self):
-        if self._max_count is None:
-            return len (self._pairs)
-        else:
-            return self._max_count 
+        count = len(self._pairs)
+        if self._max_count is not None and self._max_count <= count:
+            return self._max_count
+        else 
+            return count 
 
     def print(self):
         print(f"Formulas: {self.__len__()}")
