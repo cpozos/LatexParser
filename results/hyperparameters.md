@@ -8,7 +8,7 @@ No. Result |filename | epochs | learning rate | drop out | clip |
 
 # Optimizer
 
-filename | factor | patience | min_lr |
+No. Result | factor | patience | min_lr |
 |---|---|---|---|
 |  1 | 0.5  | 3  | 3e-5  |
 |  2 | 0.5  | 3  | 3e-5  |
