@@ -2,8 +2,8 @@
 
 No. Result |filename | epochs | learning rate | drop out | clip |
 |---|---|---|---|---|---|
-|  1 |  | 10  | 3e-4  | 0.2  | 2  |
-|  2 |  |4 | 3e-4  | 0.2  | 2  |
+|  1 | res_10_20_50k_10k_1k.pkl | 10  | 3e-4  | 0.2  | 2  |
+|  2 | res_4_10_75k_10k_1k.pkl |4 | 3e-4  | 0.2  | 2  |
 
 
 # Optimizer
