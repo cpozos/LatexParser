@@ -198,7 +198,7 @@ def run():
         save_model(f"ckpt-e{epoch+1}-vl{valid_loss:.4f}", model)
 
         # Print results
-        logger.log_epoch(epoch+1, statistics.mean(training_losses), statistics.mean(valid_losses))
+        logger.log_epoch(epoch+1, epochs, statistics.mean(training_losses), statistics.mean(valid_losses))
 
     del logger
 
