@@ -96,6 +96,14 @@ class ImageLatexDataset(Dataset):
         img_tensor = self._transform(Image.open(img_path))
         return (img_tensor, formula)
 
+    def __get_image_tensor__(self, formula):
+        for pair in self._pairs:
+            if formula == pair[1]:
+                img_path = pair[0]
+                break
+            img_tensor = self._transform(Image.open(img_path))
+            return img_tensor
+
     def __len__(self):
         count = len(self._pairs)
         if self._max_count is not None and self._max_count <= count:
