@@ -101,8 +101,8 @@ class ImageLatexDataset(Dataset):
             if formula == pair[1]:
                 img_path = pair[0]
                 break
-            img_tensor = self._transform(Image.open(img_path))
-            return img_tensor
+        img_tensor = self._transform(Image.open(img_path))
+        return img_tensor
 
     def __len__(self):
         count = len(self._pairs)
