@@ -103,7 +103,7 @@ class ImageLatexDataset(Dataset):
                 img_tensor = self._transform(Image.open(img_path))
                 return img_tensor
         return none
-            
+    
     def __len__(self):
         count = len(self._pairs)
         if self._max_count is not None and self._max_count <= count:
