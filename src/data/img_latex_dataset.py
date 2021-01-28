@@ -98,7 +98,7 @@ class ImageLatexDataset(Dataset):
 
     def get_image_tensor(self, formula):
         for pair in self._pairs:
-            if formula == pair[1]:
+            if formula.strip() == pair[1].strip():
                 img_path = pair[0]
                 img_tensor = self._transform(Image.open(img_path))
                 return img_tensor
