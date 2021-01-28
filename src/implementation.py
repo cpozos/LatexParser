@@ -14,7 +14,10 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 # PROJECT
 from architecture import *
+
 from data import DataBuilder
+
+from utilities.dataloaders import *
 from utilities.training import *
 from utilities.latex_gen import *
 
@@ -209,35 +212,23 @@ def run():
     latex_generator = LatexGenerator(model, vocabulary)
 
     # Loader
-    test_loader = DataLoader(test_dataset, 
-        batch_size=batch_size,
-        collate_fn=partial(collate_fn, vocabulary.token_id_dic),
-        pin_memory=False,
-        num_workers=num_workers
+    test_loader = DataLoader(
+        dataset=test_dataset,
+        collate_fn=partial(collate_fn_batch_size_one, vocabulary.token_id_dic)
     )
-    
-    imgs, tgt4training, tgt4loss_batch = next(iter(test_loader))
-    ref = latex_generator.idx2formulas(tgt4loss_batch)[0]
-    logit = latex_generator(imgs)[0]
 
-    # Testing
-    references = []
-    results = []
-    for imgs, tgt4training, tgt4loss_batch in test_loader:
+    # Save testing data
+    targets = []
+    predictions = []
+    for img, formula in test_loader:
         try:
-            reference = latex_generator.idx2formulas(tgt4loss_batch)
-            result = latex_generator(imgs)
-            references.append(reference)
-            results.append(result)
+            prediction = latex_generator(img)[0]
+            targets.append(formula)
+            predictions.append(prediction)
         except RuntimeError:
             break
     
-    save_test_data(f"res_{epochs}_{batch_size}_{int(num_data_train/1000)}k_{int(num_data_val/1000)}k_{int(num_data_test/1000)}k",references, results)
-
-def review_results():
-    data = load_test_data()
-    logger = TestDataLogger(data)
-    logger.print()
+    save_test_data(f"res_{epochs}_{batch_size}_{int(num_data_train/1000)}k_{int(num_data_val/1000)}k_{int(num_data_test/1000)}k", targets, predictions)
 
 if __name__ == '__main__':
     run()

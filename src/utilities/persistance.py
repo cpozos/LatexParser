@@ -24,6 +24,6 @@ def save_test_data(file_name,references, results):
             pkl.dump([references, results], file)
 
 def load_test_data(file_path):
-    with open(file_pathgt,"rb") as file:
+    with open(file_path,"rb") as file:
         data = pkl.load(file)
     return data
