@@ -141,3 +141,5 @@ src/data/sets/processed/*.pkl
 
 # Checkpoints
 chkpts/
+
+references.md

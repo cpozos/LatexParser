@@ -1,26 +1,16 @@
-# Add references here
+# Latex generator
 
-[1] https://www.youtube.com/playlist?list=PLqXS1b2lRpYTpUIEu3oxfhhTuBXmMPppA
+[1] [Image-to-Markup Generation with Coarse-to-Fine Attention
+Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, Alexander M. Rush](http://lstm.seas.harvard.edu/latex/)
 
-# References for Latex generator
+[2] [Translating Math Formula Images to LaTeX Sequences Using Deep
+Neural Networks with Sequence-level Training](https://arxiv.org/pdf/1908.11415.pdf)
 
-[1] http://lstm.seas.harvard.edu/latex/
+[3] [Seq2Seq for LaTeX generation](https://guillaumegenthial.github.io/image-to-latex.html)
 
-[2] https://github.com/yixuanzhou/image2latex
+[4] [Image To Latex with DenseNet Encoder and Joint Attention](https://www.sciencedirect.com/science/article/pii/S1877050919302686)
 
-[3] https://github.com/ritheshkumar95/im2latex-tensorflow
-
-[4] https://github.com/345ishaan/im2latex
-
-[5] https://arxiv.org/pdf/1908.11415.pdf  (PyTorch)
-
-[6] https://github.com/luopeixiang/im2latex  (PyTorch)
-
-[7] https://guillaumegenthial.github.io/image-to-latex.html
-
-[8] [Image To Latex with DenseNet Encoder and Joint Attention](https://www.sciencedirect.com/science/article/pii/S1877050919302686)
-
-[9] https://github.com/ArminKaramzade/im2latex
+[5] [Im2Latex](https://github.com/luopeixiang/im2latex)
 
 ## CNN
 
@@ -32,14 +22,12 @@
 
 [2] [Batching](https://www.youtube.com/watch?v=U4WB9p6ODjM)
 
-### Sequence2Sequence 
+### Sequence2Sequence
 
-[1] https://guillaumegenthial.github.io/sequence-to-sequence.html
-
-[2] https://github.com/bentrevett/pytorch-seq2seq
+[1] [Seq2Seq with Attention and Beam Search](https://guillaumegenthial.github.io/sequence-to-sequence.html)
 
 ### Encoder-decoder
 
-[1] https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf
+[1] [A Convolutional Encoder Model for Neural Machine Translation, Jonas Gehring, Michael Auli, David Grangier, Yann N. Dauphin]https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf
 
 [2] Natural Language Processing with PyTorch, Delip Rao & Brian McMahan, Chapter 8
