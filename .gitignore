@@ -138,3 +138,6 @@ src/data/sets/processed/*.pkl
 
 # VSCode
 .vscode/
+
+# Checkpoints
+chkpts/
