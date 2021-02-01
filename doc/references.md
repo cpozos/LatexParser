@@ -28,6 +28,6 @@ Neural Networks with Sequence-level Training](https://arxiv.org/pdf/1908.11415.p
 
 ### Encoder-decoder
 
-[1] [A Convolutional Encoder Model for Neural Machine Translation, Jonas Gehring, Michael Auli, David Grangier, Yann N. Dauphin]https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf
+[1] [A Convolutional Encoder Model for Neural Machine Translation, Jonas Gehring, Michael Auli, David Grangier, Yann N. Dauphin](https://research.fb.com/wp-content/uploads/2017/11/convolutional-encoder-model-45.pdf)
 
 [2] Natural Language Processing with PyTorch, Delip Rao & Brian McMahan, Chapter 8
