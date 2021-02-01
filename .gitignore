@@ -143,3 +143,6 @@ src/data/sets/processed/*.pkl
 chkpts/
 
 references.md
+
+# Inference data
+results/inference/*
