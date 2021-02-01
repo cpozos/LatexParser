@@ -8,7 +8,7 @@ import torch
 # Project
 from data.vocabulary import Vocabulary
 from data.img_latex_dataset import ImageLatexDataset
-from utilities.system import get_system_path
+from utilities.system import apply_system_format
 
 class DataBuilder(object):
     KINDS = ["train", "validate", "test"]
@@ -21,9 +21,9 @@ class DataBuilder(object):
     """
     def __init__(self):
         # Fix paths
-        DataBuilder.LATEX_FORMULAS_PATH = get_system_path(DataBuilder.LATEX_FORMULAS_PATH)
-        DataBuilder.IMAGE_LATEX_DIC_PATH = get_system_path(DataBuilder.IMAGE_LATEX_DIC_PATH)
-        DataBuilder.IMAGES_DIR = get_system_path(DataBuilder.IMAGES_DIR)
+        DataBuilder.LATEX_FORMULAS_PATH = apply_system_format(DataBuilder.LATEX_FORMULAS_PATH)
+        DataBuilder.IMAGE_LATEX_DIC_PATH = apply_system_format(DataBuilder.IMAGE_LATEX_DIC_PATH)
+        DataBuilder.IMAGES_DIR = apply_system_format(DataBuilder.IMAGES_DIR)
 
         # List of formulas
         self._process_latex_formulas()

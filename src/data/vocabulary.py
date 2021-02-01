@@ -3,7 +3,7 @@ import os
 from collections import Counter
 
 # Project
-from utilities.system import get_system_path
+from utilities.system import apply_system_format
 
 class Vocabulary(object):
     START_TOKEN_ID = 0
@@ -16,9 +16,9 @@ class Vocabulary(object):
 
     def __init__(self):
         # Fix paths
-        Vocabulary.RAW_DATA_PATH = get_system_path(Vocabulary.RAW_DATA_PATH)
-        Vocabulary.FILE_PATH = get_system_path(Vocabulary.FILE_PATH)
-        Vocabulary.PROCESSED_PATH = get_system_path(Vocabulary.PROCESSED_PATH)
+        Vocabulary.RAW_DATA_PATH = apply_system_format(Vocabulary.RAW_DATA_PATH)
+        Vocabulary.FILE_PATH = apply_system_format(Vocabulary.FILE_PATH)
+        Vocabulary.PROCESSED_PATH = apply_system_format(Vocabulary.PROCESSED_PATH)
         self.max_token_len = 0
         self.load()
         

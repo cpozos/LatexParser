@@ -8,7 +8,7 @@ from torchvision import transforms
 from torch.utils.data import Dataset
 
 # Project
-from utilities.system import get_system_path
+from utilities.system import apply_system_format
 
 
 class ImageLatexDataset(Dataset):
@@ -16,7 +16,7 @@ class ImageLatexDataset(Dataset):
 
     def __init__(self, output_filename, max_count=None, force=False, max_len=300):
         # Fix paths
-        ImageLatexDataset.OUTPUT_DIR = get_system_path(ImageLatexDataset.OUTPUT_DIR)
+        ImageLatexDataset.OUTPUT_DIR = apply_system_format(ImageLatexDataset.OUTPUT_DIR)
         self.max_form_len = 0
 
         self.out_data_path = join(ImageLatexDataset.OUTPUT_DIR, output_filename + '.pkl')  
