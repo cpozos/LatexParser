@@ -5,9 +5,9 @@ def apply_system_format(path):
    """
       Transform the format of the path to the correct one, depending on the operating system where the code is running
    """
-   if "//" in path and os.name == 'nt' # It is Windows
+   if "//" in path and os.name == 'nt': # It is Windows
       path = path.replace("//","\\")
-   elif "\\" in path and os.name != 'nt' # It is Linux
+   elif "\\" in path and os.name != 'nt': # It is Linux
       path = path.replace("\\","//")
 
    abs_path = os.path.abspath(os.getcwd())
