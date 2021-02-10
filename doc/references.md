@@ -1,3 +1,9 @@
+# Papers
+
+[1] [What you get is what you see: A visual markup decompiler](https://arxiv.org/pdf/1609.04938v1.pdf)
+
+[2] [Attention is all you need](https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)
+
 # Latex generator
 
 [1] [Image-to-Markup Generation with Coarse-to-Fine Attention
